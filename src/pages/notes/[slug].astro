@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+---
+
+<BaseLayout title={`${note.data.title} - Ava Li`}>
+  <Fragment slot="nav">
+    <li><a href="/">← Home</a></li>
+  </Fragment>
+
+  <a href="/#notes" class="back-link">← Back to Notes</a>
+
+  <article>
+    <div class="note-header">
+      <h1>{note.data.title}</h1>
+      <div class="note-meta">
+        <span>{note.data.date.toISOString().slice(0, 10)}</span>
+        {note.data.tags.map((tag: string) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </div>
+
+    <div class="note-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
