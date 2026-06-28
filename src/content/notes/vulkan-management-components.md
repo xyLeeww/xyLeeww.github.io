@@ -14,7 +14,7 @@ VkInstance
             - VkQueue (get from driver, not created)
 ```
 ### 1.VkInstance
-The interface between the application and the system.
+The interface between the application and driver.
 It connects app to the Vulkan loader and specifies which **layers** and **instance extentions** to enable.
 ```cpp
 VkInstanceCreateInfo createInfo = {};
