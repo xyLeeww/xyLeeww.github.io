@@ -7,7 +7,7 @@ tags: ["Vulkan", "Architecture"]
 
 ## What is a Command Buffer?
 
-Command buffers are objects used to record commands which can be subsequently submitted to a device queue for execution. All GPU operations must be recorded into a Command Buffer first, then submitted to a queue for execution. Recorded commands include commands to bind pipelines and descriptor sets, commands to draw/disptach, commands to copy buffers and images, and other commands.
+Command buffers are objects used to record commands which can be subsequently submitted to a device queue for execution. Recorded commands include commands to bind pipelines and descriptor sets, commands to draw/disptach, commands to copy buffers and images, and other commands.
 
 ## Core Concepts
 
