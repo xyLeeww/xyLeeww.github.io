@@ -2,7 +2,7 @@
 title: "Vulkan Management Components"
 date: 2026-06-28
 description: "Use cases for Instance, PysicalDevice, and Device."
-tags: ["Vulkan", "Instance", "Device"]
+tags: ["Vulkan", "Architecture"]
 ---
 
 ## Vulkan Management Components
