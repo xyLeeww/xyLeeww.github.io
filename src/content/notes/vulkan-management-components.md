@@ -14,7 +14,8 @@ VkInstance
             - VkQueue (get from driver, not created)
 ```
 ### 1.VkInstance
-The interface between the application and driver.
+- The interface between the application and driver.
+- The entry point to the Vulkan runtime.
 It connects app to the Vulkan loader and specifies which **layers** and **instance extentions** to enable.
 ```cpp
 VkInstanceCreateInfo createInfo = {};
@@ -56,8 +57,11 @@ if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)
 
 ### 4.Queue
 Queues are created implicitly when the logical device is created.
+Users use VkQueue to submit drawing commands and control commands to VkDevice.
 ```cpp
 vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
 vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
+
+vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 ```
 More specific code can be found in the repository [HelloTriangle](https://github.com/xyLeeww/HelloTriangle).
