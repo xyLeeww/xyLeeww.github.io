@@ -6,7 +6,7 @@ tags: ["Vulkan", "Instance", "Device"]
 ---
 
 ## Vulkan Management Components
-Vulkan expose a clear object hierarchy that the applocation must create and manage explicity. Setting up these management objects is the first step in every Vulkan application. Understand this hierarchy allows you to use Vulkan more effectively.
+Vulkan expose a clear object hierarchy that the application must create and manage explicity. Setting up these management objects is the first step in every Vulkan application. Understand this hierarchy allows you to use Vulkan more effectively.
 ```
 VkInstance
    - VkPhysicalDevice (not created)
