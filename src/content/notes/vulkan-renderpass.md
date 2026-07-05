@@ -112,7 +112,26 @@ vkCmdBeginRenderPass(cmd, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
   vkCmdDraw(cmd, vertexCount, 1, 0, 0);
 vkCmdEndRenderPass(cmd);
 ```
+But if you use dynamic rendering, it will be like the example below. Also remember to enable it when creating logical device:
+```cpp
+enabledFeatures.dynamicRendering = VK_TRUE;
+deviceCreatepNextChain = &enabledFeatures;
 
+VkRenderingInfo renderingInfo{
+	.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+	.renderArea = { 0, 0, width, height },
+	.layerCount = 1,
+	.colorAttachmentCount = 1,
+	.pColorAttachments = &colorAttachment,
+	.pDepthAttachment = &depthStencilAttachment,
+	.pStencilAttachment = &depthStencilAttachment
+};
+
+// Start a dynamic rendering section
+vkCmdBeginRendering(commandBuffer, &renderingInfo);
+// Finish the current dynamic rendering section
+vkCmdEndRendering(commandBuffer);
+```
 ## Render Pass vs Dynamic Rendering (Vulkan 1.3+)
 
 | | Render Pass | Dynamic Rendering (`VK_KHR_dynamic_rendering`) |
