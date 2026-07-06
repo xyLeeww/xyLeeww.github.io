@@ -161,7 +161,7 @@ When an application runs with elevated privileges (admin/root), the loader ignor
 $env:VK_LOADER_DEBUG = "all"
 # Run the app and inspect output for:
 # - Which ICDs were found
-# - Which layers were loaded
+# - Which layer
 # - Any missing manifests or library load failures
 .\my_vulkan_app.exe
 ```

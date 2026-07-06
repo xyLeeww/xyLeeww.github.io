@@ -112,6 +112,7 @@ vkCmdBeginRenderPass(cmd, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
   vkCmdDraw(cmd, vertexCount, 1, 0, 0);
 vkCmdEndRenderPass(cmd);
 ```
+
 But if you use dynamic rendering, it will be like the example below. Also remember to enable it when creating logical device:
 ```cpp
 enabledFeatures.dynamicRendering = VK_TRUE;
