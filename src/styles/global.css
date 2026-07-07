@@ -393,6 +393,22 @@ section { margin-bottom: 48px; }
   font-weight: 600;
 }
 
+/* ===== KaTeX Math ===== */
+.note-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+  margin: 16px 0;
+}
+
+.note-content .katex {
+  font-size: 1.1em;
+}
+
+.note-content .katex-display > .katex {
+  font-size: 1.2em;
+}
+
 /* ===== Footer ===== */
 .site-footer {
   text-align: center;
