@@ -26,7 +26,7 @@ const { Content } = await render(note);
       <h1>{note.data.title}</h1>
       <div class="note-meta">
         <span>{note.data.date.toISOString().slice(0, 10)}</span>
-        {note.data.tags.map((tag: string) => (
+        {note.data.tags.map((tag) => (
           <span class="tag">{tag}</span>
         ))}
       </div>

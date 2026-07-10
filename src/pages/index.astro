@@ -39,7 +39,7 @@ const notes = (await getCollection('notes')).sort(
             )}
             {note.data.tags.length > 0 && (
               <div class="post-tags">
-                {note.data.tags.map((tag: string) => (
+                {note.data.tags.map((tag) => (
                   <span class="tag">{tag}</span>
                 ))}
               </div>
