@@ -37,6 +37,8 @@ Describe the format and how each attachment is handled:
 
 ### Subpasses (`VkSubpassDescription`)
 
+Subpasses allow multiple rendering steps to execute within the same tile memory, avoiding VRAM round-trips and reducing memory bandwidth consumption.
+
 Each subpass references a subset of attachments:
 
 - **Input attachments** — Read from a previous subpass's output (tile-local read)
@@ -154,4 +156,3 @@ Dynamic rendering is preferred for new code when multi-subpass merging is not ne
 - **Render pass compatibility** — Pipelines are created against a specific render pass. Compatible render passes must have identical attachment formats and sample counts.
 
 ---
-
