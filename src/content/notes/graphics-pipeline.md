@@ -101,11 +101,24 @@ Capabilities:
 - Shadow mapping
 - Discard
 
+#### Stencil Test
+
+Stencil test is a fixed-function per-fragment operation that whether a fragment is visibal by comparing its stencil value against reference. In Vulkan, depth and stencil are configured in `VkPipelineDepthStencilStateCreateInfo`.
+
 #### Depth Test
 
 Depth test (also known as Z-test) is a per-fragment operation that determines whether a fragment is visible by comparing its depth value against the value already stored in the depth buffer (Z-buffer). It is the primary mechanism for hidden surface removal, ensuring that closer objects occlude farther ones.
 Logically, depth test occurs after the fragment shader and before color blending. However, modern GPUs perform Early-Z testing before the fragment shader as an optimization when possible.
-Early-Z is a hardware optimization that skips shading for occluded fragments entirely. To maximize Early-Z efficiency, render opaque objects front-to-back.
+
+Early-Z: Depth test executes before the fragment shader. The GPU compares depth first — if the fragment fails, it's discarded immediately, skipping all shading work. Early-Z is a hardware optimization that skips shading for occluded fragments entirely. To maximize Early-Z efficiency, render opaque objects front-to-back。
+Late-Z: Depth test executes after the fragment shader. The fragment goes through full shading first, then depth comparison decides whether to write.
+
+The GPU automatically falls back to late-Z when:
+
+- Shader writes gl_FragDepth / SV_Depth
+- Uses discard / clip()
+- Alpha-to-coverage is enabled
+- Certain special combinations e.g. depth write off + stencil write on
 
 #### Color Belending
 
