@@ -110,13 +110,12 @@ auto viewport_width = viewport_height * (double(image_width)/image_height);
 
 **代码清单 9**:`main.cc` 创建场景光线
 
-```cpp {2,8-10,17-42,51-55}
+```cpp {2,7-9,15-40,49-53}
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"
 
 #include <iostream>
-
 
 color ray_color(const ray& r) {
     return color(0,0,0);
@@ -125,7 +124,6 @@ color ray_color(const ray& r) {
 int main() {
 
     // Image
-
 
     auto aspect_ratio = 16.0 / 9.0;
     int image_width = 400;
@@ -192,13 +190,12 @@ $$
 
 **代码清单 10**:`main.cc` 渲染从蓝到白的渐变
 
-```cpp {9-11}
+```cpp {8-10}
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"
 
 #include <iostream>
-
 
 color ray_color(const ray& r) {
     vec3 unit_direction = unit_vector(r.direction());

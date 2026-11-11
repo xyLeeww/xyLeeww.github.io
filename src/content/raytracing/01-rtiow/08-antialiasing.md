@@ -26,7 +26,7 @@ license: "CC0 1.0"
 
 **代码清单 41**:`rtweekend.h` `random_double()` 函数
 
-```cpp {2,15-23}
+```cpp {2,14-22}
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -39,7 +39,6 @@ license: "CC0 1.0"
 inline double degrees_to_radians(double degrees) {
     return degrees * pi / 180.0;
 }
-
 
 inline double random_double() {
     // Returns a random real in [0,1).
@@ -56,14 +55,12 @@ C++ 传统上并没有标准的随机数生成器,不过较新的 C++ 版本通�
 
 **代码清单 42**:`rtweekend.h` `random_double()` 的另一种实现
 
-```cpp {4,9-13}
+```cpp {3,7-11}
 ...
-
 
 #include <random>
 
 ...
-
 
 inline double random_double() {
     static std::uniform_real_distribution<double> distribution(0.0, 1.0);
@@ -76,7 +73,6 @@ inline double random_double(double min, double max) {
     return min + (max-min)*random_double();
 }
 
-
 ...
 ```
 
@@ -88,7 +84,7 @@ inline double random_double(double min, double max) {
 
 **代码清单 43**:`interval.h` `interval::clamp()` 工具函数
 
-```cpp {10-14}
+```cpp {9-13}
 class interval {
   public:
     ...
@@ -96,7 +92,6 @@ class interval {
     bool surrounds(double x) const {
         return min < x && x < max;
     }
-
 
     double clamp(double x) const {
         if (x < min) return min;
@@ -137,7 +132,7 @@ void write_color(std::ostream& out, const color& pixel_color) {
 
 **代码清单 45**:`camera.h` 带有每像素采样数参数的相机
 
-```cpp {5,15-20,29,40,47-65}
+```cpp {5,15-20,29,39,45-63}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -176,13 +171,11 @@ class camera {
         image_height = int(image_width / aspect_ratio);
         image_height = (image_height < 1) ? 1 : image_height;
 
-
         pixel_samples_scale = 1.0 / samples_per_pixel;
 
         center = point3(0, 0, 0);
         ...
     }
-
 
     ray get_ray(int i, int j) const {
         // Construct a camera ray originating from the origin and directed at randomly sampled

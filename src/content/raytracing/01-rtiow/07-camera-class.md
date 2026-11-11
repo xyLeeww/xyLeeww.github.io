@@ -56,13 +56,12 @@ class camera {
 
 **代码清单 38**:`camera.h` camera::ray_color 函数
 
-```cpp {9-17}
+```cpp {8-16}
 class camera {
   ...
 
   private:
     ...
-
 
     color ray_color(const ray& r, const hittable& world) const {
         hit_record rec;
@@ -154,15 +153,13 @@ class camera {
 
 **代码清单 40**:`main.cc` 使用新相机的新 main
 
-```cpp {4,15-25} del={10-12}
+```cpp {3,13-23} del={8-10}
 #include "rtweekend.h"
-
 
 #include "camera.h"
 #include "hittable.h"
 #include "hittable_list.h"
 #include "sphere.h"
-
 
 color ray_color(const ray& r, const hittable& world) {
     ...

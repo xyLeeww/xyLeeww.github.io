@@ -103,11 +103,10 @@ class sphere : public hittable {
 
 **代码清单 61**:`material.h` 新的 lambertian 材质类
 
-```cpp {6-20}
+```cpp {5-19}
 class material {
     ...
 };
-
 
 class lambertian : public material {
   public:
@@ -136,14 +135,13 @@ class lambertian : public material {
 
 **代码清单 62**:`vec3.h` `vec3::near_zero()` 方法
 
-```cpp {9-13}
+```cpp {8-12}
 class vec3 {
     ...
 
     double length_squared() const {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
-
 
     bool near_zero() const {
         // Return true if the vector is close to zero in all dimensions.
@@ -157,7 +155,7 @@ class vec3 {
 
 **代码清单 63**:`material.h` 万无一失的朗伯散射
 
-```cpp {10-12}
+```cpp {9-11}
 class lambertian : public material {
   public:
     lambertian(const color& albedo) : albedo(albedo) {}
@@ -165,7 +163,6 @@ class lambertian : public material {
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
     const override {
         auto scatter_direction = rec.normal + random_unit_vector();
-
 
         // Catch degenerate scatter direction
         if (scatter_direction.near_zero())
@@ -193,13 +190,12 @@ class lambertian : public material {
 
 **代码清单 64**:`vec3.h` vec3 反射函数
 
-```cpp {8-10}
+```cpp {7-9}
 ...
 
 inline vec3 random_on_hemisphere(const vec3& normal) {
     ...
 }
-
 
 inline vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
@@ -210,13 +206,12 @@ inline vec3 reflect(const vec3& v, const vec3& n) {
 
 **代码清单 65**:`material.h` 带反射函数的金属材质
 
-```cpp {8-22}
+```cpp {7-21}
 ...
 
 class lambertian : public material {
     ...
 };
-
 
 class metal : public material {
   public:
@@ -290,7 +285,7 @@ class sphere : public hittable {
 
 **代码清单 68**:`main.cc` 带有金属球的场景
 
-```cpp {6,13-21}
+```cpp {6,12-20}
 #include "rtweekend.h"
 
 #include "camera.h"
@@ -301,7 +296,6 @@ class sphere : public hittable {
 
 int main() {
     hittable_list world;
-
 
     auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
     auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));

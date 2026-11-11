@@ -24,7 +24,7 @@ license: "CC0 1.0"
 
 **代码清单 47**:`vec3.h` `vec3` 随机工具函数
 
-```cpp {10-16}
+```cpp {9-15}
 class vec3 {
   public:
     ...
@@ -32,7 +32,6 @@ class vec3 {
     double length_squared() const {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
-
 
     static vec3 random() {
         return vec3(random_double(), random_double(), random_double());
@@ -62,13 +61,12 @@ class vec3 {
 
 **代码清单 48**:`vec3.h` `random_unit_vector()` 函数,第一版
 
-```cpp {8-15}
+```cpp {7-14}
 ...
 
 inline vec3 unit_vector(const vec3& v) {
     return v / v.length();
 }
-
 
 inline vec3 random_unit_vector() {
     while (true) {
@@ -105,7 +103,7 @@ inline vec3 random_unit_vector() {
 
 **代码清单 50**:`vec3.h` `random_on_hemisphere()` 函数
 
-```cpp {13-19}
+```cpp {12-18}
 ...
 
 inline vec3 random_unit_vector() {
@@ -116,7 +114,6 @@ inline vec3 random_unit_vector() {
             return p / sqrt(lensq);
     }
 }
-
 
 inline vec3 random_on_hemisphere(const vec3& normal) {
     vec3 on_unit_sphere = random_unit_vector();
@@ -239,7 +236,7 @@ int main() {
 
 **代码清单 54**:`camera.h` 带容差地计算反射光线的起点
 
-```cpp {13}
+```cpp {12}
 class camera {
   ...
   private:
@@ -250,7 +247,6 @@ class camera {
             return color(0,0,0);
 
         hit_record rec;
-
 
         if (world.hit(r, interval(0.001, infinity), rec)) {
             vec3 direction = random_on_hemisphere(rec.normal);
@@ -357,7 +353,7 @@ class camera {
 
 **代码清单 57**:`color.h` 带伽马校正的 `write_color()`
 
-```cpp {1-7,15-18}
+```cpp {1-7,14-17}
 inline double linear_to_gamma(double linear_component)
 {
     if (linear_component > 0)
@@ -370,7 +366,6 @@ void write_color(std::ostream& out, const color& pixel_color) {
     auto r = pixel_color.x();
     auto g = pixel_color.y();
     auto b = pixel_color.z();
-
 
     // Apply a linear to gamma transform for gamma 2
     r = linear_to_gamma(r);

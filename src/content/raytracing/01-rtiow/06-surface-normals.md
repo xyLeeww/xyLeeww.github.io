@@ -26,14 +26,13 @@ license: "CC0 1.0"
 
 **代码清单 12**:`main.cc` 在球体上渲染表面法线
 
-```cpp {1,9-13,17-21}
+```cpp {1,8-12,16-20}
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     auto a = dot(r.direction(), r.direction());
     auto b = -2.0 * dot(r.direction(), oc);
     auto c = dot(oc, oc) - radius*radius;
     auto discriminant = b*b - 4*a*c;
-
 
     if (discriminant < 0) {
         return -1.0;
@@ -407,7 +406,6 @@ auto sphere_ptr = make_shared<sphere>(point3(0,0,0), 1.0);
 #include <limits>
 #include <memory>
 
-
 // C++ Std Usings
 
 using std::make_shared;
@@ -449,10 +447,9 @@ inline double degrees_to_radians(double degrees) {
 
 **代码清单 27**:`hittable_list.h` 假定已包含 rtweekend.h
 
-```cpp del={1,5-6}
+```cpp del={1,4-5}
 #include <memory>
 #include <vector>
-
 
 using std::make_shared;
 using std::shared_ptr;
@@ -475,9 +472,8 @@ using std::shared_ptr;
 
 **代码清单 30**:`main.cc` 使用 hittable 的新 main
 
-```cpp {1,7-9,20-24,43-48,82} del={4-6,12-17}
+```cpp {1,6-8,16-20,38-43,76} del={3-5,10-14}
 #include "rtweekend.h"
-
 
 #include "color.h"
 #include "ray.h"
@@ -486,14 +482,11 @@ using std::shared_ptr;
 #include "hittable_list.h"
 #include "sphere.h"
 
-
 #include <iostream>
-
 
 double hit_sphere(const point3& center, double radius, const ray& r) {
     ...
 }
-
 
 color ray_color(const ray& r, const hittable& world) {
     hit_record rec;
@@ -516,7 +509,6 @@ int main() {
     // Calculate the image height, and ensure that it's at least 1.
     int image_height = int(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
-
 
     // World
 
@@ -555,7 +547,6 @@ int main() {
             auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
             auto ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
-
 
             color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);

@@ -87,13 +87,12 @@ $$
 
 **代码清单 71**:`vec3.h` 折射函数
 
-```cpp {8-13}
+```cpp {7-12}
 ...
 
 inline vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
 }
-
 
 inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
     auto cos_theta = std::fmin(dot(-uv, n), 1.0);
@@ -107,13 +106,12 @@ inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 
 **代码清单 72**:`material.h` 总是发生折射的电介质材质类
 
-```cpp {8-28}
+```cpp {7-27}
 ...
 
 class metal : public material {
     ...
 };
-
 
 class dielectric : public material {
   public:
@@ -290,7 +288,7 @@ auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
 **代码清单 78**:`material.h` 完整的玻璃材质
 
-```cpp {18,33-38}
+```cpp {17,31-36}
 class dielectric : public material {
   public:
     dielectric(double refraction_index) : refraction_index(refraction_index) {}
@@ -307,7 +305,6 @@ class dielectric : public material {
         bool cannot_refract = ri * sin_theta > 1.0;
         vec3 direction;
 
-
         if (cannot_refract || reflectance(cos_theta, ri) > random_double())
             direction = reflect(unit_direction, rec.normal);
         else
@@ -321,7 +318,6 @@ class dielectric : public material {
     // Refractive index in vacuum or air, or the ratio of the material's refractive index over
     // the refractive index of the enclosing media
     double refraction_index;
-
 
     static double reflectance(double cosine, double refraction_index) {
         // Use Schlick's approximation for reflectance.

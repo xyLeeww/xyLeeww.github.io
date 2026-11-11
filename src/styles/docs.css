@@ -309,43 +309,72 @@ html { scroll-padding-top: calc(var(--d-navbar-h) + 12px); }
   font-weight: var(--shiki-light-font-weight, normal);
 }
 
-.dcopy {
+/* Copy / word-wrap buttons (Docusaurus-style icon buttons, shown on hover). */
+.dcode { position: relative; }
+
+.dcode-btns {
   position: absolute;
   top: 8px;
   right: 8px;
-  padding: 4px 10px;
-  font-size: 0.78rem;
-  font-family: var(--d-font);
-  border: 1px solid var(--d-border);
-  border-radius: 6px;
-  background: var(--d-bg);
-  color: var(--d-text-soft);
-  cursor: pointer;
+  display: flex;
+  gap: 6px;
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-.dcode:hover .dcopy, .dcopy:focus { opacity: 1; }
-.dcode { position: relative; }
+.dcode:hover .dcode-btns, .dcode-btns:focus-within { opacity: 1; }
 
-/* Changed / deleted line marks (```cpp {2,4-6} del={3}), see src/shiki/line-marks.mjs. */
+.dcode-btns button {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--d-border);
+  border-radius: 6.4px;
+  background: var(--d-code-bg);
+  color: var(--d-text-soft);
+  cursor: pointer;
+}
+
+.dcode-btns button:hover { color: var(--d-text); border-color: var(--d-text-soft); }
+.dcode-btns button.on { color: var(--d-primary); border-color: var(--d-primary); }
+.dcode-btns svg { width: 18px; height: 18px; }
+
+.markdown pre.dwrap > code { white-space: pre-wrap; word-break: break-word; width: auto !important; }
+
+/* Added / deleted lines (```cpp {2,4-6} del={3}, see src/shiki/line-marks.mjs): diff style with a +/- gutter. */
+.markdown pre.has-line-marks { padding-left: 24px; }
 .markdown pre.has-line-marks > code { display: block; width: max-content; min-width: 100%; }
 
 .markdown pre.has-line-marks .line {
   display: inline-block;
+  position: relative;
   width: 100%;
-  margin: 0 -16px;
-  padding: 0 16px 0 13px;
+  min-height: 1.45em;
+  vertical-align: top;
+  margin: 0 -16px 0 -24px;
+  padding: 0 16px 0 24px;
   box-sizing: content-box;
-  border-left: 3px solid transparent;
 }
 
-.markdown pre .line.highlighted { background: #fff8c5 !important; border-left-color: #d4a72c; }
-.markdown pre .line.deleted { background: #ffebe9 !important; border-left-color: #cf222e; }
-.markdown pre .line.deleted > span { text-decoration: line-through; opacity: 0.75; }
+.markdown pre .line.highlighted::before,
+.markdown pre .line.deleted::before {
+  position: absolute;
+  left: 6px;
+  font-weight: 600;
+}
 
-[data-theme='dark'] .markdown pre .line.highlighted { background: rgba(187, 128, 9, 0.22) !important; border-left-color: #d29922; }
-[data-theme='dark'] .markdown pre .line.deleted { background: rgba(248, 81, 73, 0.15) !important; border-left-color: #f85149; }
+.markdown pre .line.highlighted { background: #dcefe1 !important; }
+.markdown pre .line.highlighted::before { content: '+'; color: #1a7f37; }
+.markdown pre .line.deleted { background: #fbe1e1 !important; }
+.markdown pre .line.deleted::before { content: '-'; color: #cf222e; }
+
+[data-theme='dark'] .markdown pre .line.highlighted { background: rgba(46, 160, 67, 0.2) !important; }
+[data-theme='dark'] .markdown pre .line.highlighted::before { color: #3fb950; }
+[data-theme='dark'] .markdown pre .line.deleted { background: rgba(248, 81, 73, 0.18) !important; }
+[data-theme='dark'] .markdown pre .line.deleted::before { color: #f85149; }
 
 .markdown pre code { background: none; border: 0; padding: 0; font-size: inherit; }
 
