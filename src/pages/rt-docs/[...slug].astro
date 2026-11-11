@@ -78,12 +78,6 @@ const docsUrl = (id: string) => `/rt-docs/${id}/`;
   </div>
 
   <script is:inline type="module">
-    // Keep readers inside this layout: content links point at the /raytracing/ pages.
-    document.querySelectorAll('.markdown a[href^="/raytracing/"]').forEach((a) => {
-      const href = a.getAttribute('href');
-      if (!/\.(png|jpe?g|gif|svg)$/i.test(href.split('#')[0])) a.setAttribute('href', href.replace(/^\/raytracing\//, '/rt-docs/'));
-    });
-
     // Highlight the heading currently in view in the right-hand TOC.
     const links = [...document.querySelectorAll('.dtoc a')];
     if (links.length) {

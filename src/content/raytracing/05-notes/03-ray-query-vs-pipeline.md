@@ -50,7 +50,7 @@ BLAS(底层):一个或多个几何体(geometry),每个是一组三角形或一�
 - **TLAS** 存实例:每个 `VkAccelerationStructureInstanceKHR` 包含一个 3×4 变换矩阵、24 位的 `instanceCustomIndex`(着色器里读到的自定义编号)、8 位的 `mask`(和光线的剔除掩码做按位与)、24 位的 `instanceShaderBindingTableRecordOffset`(只有光追管线用,决定命中组)、`flags`(例如关闭背面剔除、强制不透明)以及 BLAS 的设备地址。
 - 在着色器中,TLAS 作为 `uniform accelerationStructureEXT` 描述符出现,两种模型的写法相同。
 
-BLAS 内部就是上一篇讲的 BVH,只是格式由驱动决定。构建细节见本站 [NVIDIA 概念详解:加速结构](/raytracing/04-nvidia-concepts/01-acceleration-structures/)。
+BLAS 内部就是上一篇讲的 BVH,只是格式由驱动决定。构建细节见本站 [NVIDIA 概念详解:加速结构](/rt-docs/04-nvidia-concepts/01-acceleration-structures/)。
 
 ## 3. 光追管线
 
@@ -131,7 +131,7 @@ vkCmdTraceRaysKHR(cmd,
                   width, height, 1);
 ```
 
-SBT 的详细布局和填写步骤见本站 [NVIDIA 概念详解:着色器绑定表](/raytracing/04-nvidia-concepts/02-shader-binding-table/)。
+SBT 的详细布局和填写步骤见本站 [NVIDIA 概念详解:着色器绑定表](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)。
 
 ## 4. Ray Query
 
@@ -248,7 +248,7 @@ float visibility(vec3 P, vec3 N, vec3 lightPos)
 }
 ```
 
-如果场景全部是不透明几何,循环体永远不会执行,一次 `rayQueryProceedEXT` 就会完成遍历。Sascha Willems 的 rayquery 示例正是利用这一点,只调用了一次 `rayQueryProceedEXT`(见 [示例导读](/raytracing/05-notes/04-sascha-samples-guide/))。
+如果场景全部是不透明几何,循环体永远不会执行,一次 `rayQueryProceedEXT` 就会完成遍历。Sascha Willems 的 rayquery 示例正是利用这一点,只调用了一次 `rayQueryProceedEXT`(见 [示例导读](/rt-docs/05-notes/04-sascha-samples-guide/))。
 
 对比两段代码:管线版需要一个额外的 miss 着色器、SBT 中的一条 miss 记录以及负载变量;Ray Query 版所有逻辑都在一个函数里,而且可以直接插进已有的延迟渲染或前向渲染管线。这正是 Ray Query 在“光栅化 + 局部光追效果”的混合渲染中广受欢迎的原因。
 
@@ -276,5 +276,5 @@ float visibility(vec3 P, vec3 N, vec3 lightPos)
 - Khronos 博客:[Ray Tracing In Vulkan](https://www.khronos.org/blog/ray-tracing-in-vulkan)(三个扩展的设计背景)
 - Vulkan 规范:[Ray Tracing 章节](https://registry.khronos.org/vulkan/specs/latest/html/vkspec.html#ray-tracing)
 - GLSL 扩展规范:[GLSL_EXT_ray_tracing](https://github.com/KhronosGroup/GLSL/blob/main/extensions/ext/GLSL_EXT_ray_tracing.txt)、[GLSL_EXT_ray_query](https://github.com/KhronosGroup/GLSL/blob/main/extensions/ext/GLSL_EXT_ray_query.txt)
-- 本站:[NVIDIA 概念详解:着色器绑定表](/raytracing/04-nvidia-concepts/02-shader-binding-table/)
-- 本站:[NVIDIA 概念详解:Ray Query](/raytracing/04-nvidia-concepts/03-ray-query/)
+- 本站:[NVIDIA 概念详解:着色器绑定表](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)
+- 本站:[NVIDIA 概念详解:Ray Query](/rt-docs/04-nvidia-concepts/03-ray-query/)

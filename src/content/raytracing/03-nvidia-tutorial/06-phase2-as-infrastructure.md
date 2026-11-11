@@ -297,7 +297,7 @@ void createAccelerationStructure(VkAccelerationStructureTypeKHR asType,  // The 
 - 在同一个命令缓冲区(command buffer)中构建多个加速结构
 - 对动态场景使用更新(update)模式,而不是从头重建
 
-注意:[加速结构辅助工具](/raytracing/04-nvidia-concepts/01-acceleration-structures/)会处理上述所有事情,而且做得更多。不过为了保持简单,这里我们使用一种直截了当的方法。
+注意:[加速结构辅助工具](/rt-docs/04-nvidia-concepts/01-acceleration-structures/)会处理上述所有事情,而且做得更多。不过为了保持简单,这里我们使用一种直截了当的方法。
 
 ### 步骤 2.3:编写 BLAS 创建方法(仅搭建框架)
 
@@ -400,4 +400,4 @@ Ready to build top-level acceleration structure with 2 instances
 
 ## 下一步
 
-在[阶段 3](/raytracing/03-nvidia-tutorial/07-phase3-basic-as/)中,我们将利用刚刚搭好的基础设施真正构建加速结构。这一步会创建光线追踪所需的 BLAS 和 TLAS,以便高效地遍历几何体。
+在[阶段 3](/rt-docs/03-nvidia-tutorial/07-phase3-basic-as/)中,我们将利用刚刚搭好的基础设施真正构建加速结构。这一步会创建光线追踪所需的 BLAS 和 TLAS,以便高效地遍历几何体。

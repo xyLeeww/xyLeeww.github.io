@@ -2,9 +2,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  --d-primary: #2e8555;
-  --d-primary-dark: #29784c;
-  --d-primary-soft: rgba(46, 133, 85, 0.1);
+  --d-primary: #c62828;
+  --d-primary-dark: #b71c1c;
+  --d-primary-soft: rgba(198, 40, 40, 0.08);
   --d-text: #1c1e21;
   --d-text-soft: #525860;
   --d-bg: #fff;
@@ -21,9 +21,9 @@
 }
 
 [data-theme='dark'] {
-  --d-primary: #25c2a0;
-  --d-primary-dark: #21af90;
-  --d-primary-soft: rgba(37, 194, 160, 0.15);
+  --d-primary: #ff6b6b;
+  --d-primary-dark: #f05252;
+  --d-primary-soft: rgba(255, 107, 107, 0.14);
   --d-text: #e3e3e3;
   --d-text-soft: #b0b3b8;
   --d-bg: #1b1b1d;

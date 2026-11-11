@@ -236,7 +236,7 @@ void createRayTracingPipeline()
 
 更新 `createShaderBindingTable()` 方法,用真正的着色器数据填充 SBT:
 
-**📖文档**:强烈建议此时阅读[着色器绑定表](/raytracing/04-nvidia-concepts/02-shader-binding-table/)一文。它解释了相关概念和实现细节。
+**📖文档**:强烈建议此时阅读[着色器绑定表](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)一文。它解释了相关概念和实现细节。
 
 ```cpp
 void createShaderBindingTable(const VkRayTracingPipelineCreateInfoKHR& rtPipelineInfo)

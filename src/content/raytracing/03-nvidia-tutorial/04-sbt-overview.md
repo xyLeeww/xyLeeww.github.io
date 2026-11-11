@@ -96,7 +96,7 @@ flowchart LR
 
 **实例关联(Instance Association)**:TLAS 中的实例可以通过 `hitGroupId` 字段指定使用哪个命中着色器。
 
-> **译注**:在 Vulkan 的 `VkAccelerationStructureInstanceKHR` 结构中,对应的字段名是 `instanceShaderBindingTableRecordOffset`(见[阶段 2](/raytracing/03-nvidia-tutorial/06-phase2-as-infrastructure/)中的代码)。
+> **译注**:在 Vulkan 的 `VkAccelerationStructureInstanceKHR` 结构中,对应的字段名是 `instanceShaderBindingTableRecordOffset`(见[阶段 2](/rt-docs/03-nvidia-tutorial/06-phase2-as-infrastructure/)中的代码)。
 
 **附加数据(Data Attachment)**:命中着色器可以在着色器句柄旁边附带自定义数据(材质属性、逐实例数据)。
 

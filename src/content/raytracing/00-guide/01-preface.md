@@ -23,11 +23,11 @@ kind: original
 
 - 正文力求完整、忠实,不删减;代码保持原样,方便和原文对照。
 - 个人补充的说明会写成“**译注**”,和原文区分开。
-- 术语统一使用[术语表](/raytracing/00-guide/03-glossary/)中的译法。
+- 术语统一使用[术语表](/rt-docs/00-guide/03-glossary/)中的译法。
 - 每页顶部都有原文链接。译文如有出入,以原文为准。
 
 ## 怎么读
 
-如果时间不多,可以按[两天学习计划](/raytracing/00-guide/02-study-plan/)走;否则按左侧目录顺序读即可。
+如果时间不多,可以按[两天学习计划](/rt-docs/00-guide/02-study-plan/)走;否则按左侧目录顺序读即可。
 
 发现翻译错误或讲解不清楚的地方,欢迎在 [GitHub](https://github.com/xyLeeww/xyLeeww.github.io/issues) 提 Issue,或发邮件到 [xinyuleeww@gmail.com](mailto:xinyuleeww@gmail.com)。

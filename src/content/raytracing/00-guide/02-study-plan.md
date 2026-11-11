@@ -11,11 +11,11 @@ kind: original
 
 | 时长 | 内容 | 阅读 |
 |---|---|---|
-| 1.5h | 光线、相机、球体相交、法线 | [Ray Tracing in One Weekend](/raytracing/01-rtiow/01-overview/) 第 1–6 章 |
+| 1.5h | 光线、相机、球体相交、法线 | [Ray Tracing in One Weekend](/rt-docs/01-rtiow/01-overview/) 第 1–6 章 |
 | 1.5h | 抗锯齿、漫反射、金属、电介质、相机、景深 | 同书第 7–14 章(以理解为主,可以略读推导) |
-| 1h | 光线与三角形相交(Möller–Trumbore)和 AABB 相交 | [三角形与 AABB 相交](/raytracing/05-notes/01-ray-triangle-intersection/) |
-| 1h | BVH 的构建与遍历 | [The Next Week:BVH](/raytracing/02-tnw-bvh/01-bvh/) |
-| 1–1.5h | SAH 和更快的 BVH | [BVH 与 SAH](/raytracing/05-notes/02-bvh-sah/) |
+| 1h | 光线与三角形相交(Möller–Trumbore)和 AABB 相交 | [三角形与 AABB 相交](/rt-docs/05-notes/01-ray-triangle-intersection/) |
+| 1h | BVH 的构建与遍历 | [The Next Week:BVH](/rt-docs/02-tnw-bvh/01-bvh/) |
+| 1–1.5h | SAH 和更快的 BVH | [BVH 与 SAH](/rt-docs/05-notes/02-bvh-sah/) |
 
 **当天自测:**
 
@@ -27,11 +27,11 @@ kind: original
 
 | 时长 | 内容 | 阅读 |
 |---|---|---|
-| 1h | 硬件光追的整体图景、Ray Query 与光追管线 | [Ray Query 与光追管线对比](/raytracing/05-notes/03-ray-query-vs-pipeline/) |
-| 1h | 从光栅化到光线追踪、BLAS/TLAS、SBT 概览 | [NVIDIA 教程](/raytracing/03-nvidia-tutorial/01-introduction/) 前 4 页 |
+| 1h | 硬件光追的整体图景、Ray Query 与光追管线 | [Ray Query 与光追管线对比](/rt-docs/05-notes/03-ray-query-vs-pipeline/) |
+| 1h | 从光栅化到光线追踪、BLAS/TLAS、SBT 概览 | [NVIDIA 教程](/rt-docs/03-nvidia-tutorial/01-introduction/) 前 4 页 |
 | 2h | 跟着教程一步步搭建:加速结构 → 管线 → 着色器 → 渲染 | NVIDIA 教程 Phase 1–8 |
-| 1h | 深入加速结构和 SBT | [NVIDIA 概念详解](/raytracing/04-nvidia-concepts/01-acceleration-structures/) |
-| 1h | 读一份短小的完整代码 | [Sascha Willems 示例导读](/raytracing/05-notes/04-sascha-samples-guide/) |
+| 1h | 深入加速结构和 SBT | [NVIDIA 概念详解](/rt-docs/04-nvidia-concepts/01-acceleration-structures/) |
+| 1h | 读一份短小的完整代码 | [Sascha Willems 示例导读](/rt-docs/05-notes/04-sascha-samples-guide/) |
 
 **当天自测:**
 

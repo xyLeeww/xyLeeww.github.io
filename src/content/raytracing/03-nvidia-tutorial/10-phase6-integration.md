@@ -69,7 +69,7 @@ void raytraceScene(VkCommandBuffer cmd)
 }
 ```
 
-这个函数首先绑定光线追踪管线,接着绑定为着色器提供场景纹理的描述符集。然后,它使用推送描述符集(push descriptor set)来指定顶层加速结构(TLAS)以及写入光线追踪结果的输出图像。两条管线写入的是同一张目标图像——光栅化通过帧缓冲区的颜色附件写入,光线追踪则通过存储图像(storage image)绑定写入——这一点在[《像素究竟写到哪里:目标图像》](/raytracing/03-nvidia-tutorial/02-raster-to-rt/)中已经介绍过。推送常量(push constant)的设置方式与图形管线类似,用来向着色器提供每帧的数据。随后函数调用 `vkCmdTraceRaysKHR`,派发光线追踪管线并执行相关的着色器。最后,一个内存屏障(barrier)确保光线追踪图像在交给色调映射器(tonemapper)做后处理之前已经完全写好。
+这个函数首先绑定光线追踪管线,接着绑定为着色器提供场景纹理的描述符集。然后,它使用推送描述符集(push descriptor set)来指定顶层加速结构(TLAS)以及写入光线追踪结果的输出图像。两条管线写入的是同一张目标图像——光栅化通过帧缓冲区的颜色附件写入,光线追踪则通过存储图像(storage image)绑定写入——这一点在[《像素究竟写到哪里:目标图像》](/rt-docs/03-nvidia-tutorial/02-raster-to-rt/)中已经介绍过。推送常量(push constant)的设置方式与图形管线类似,用来向着色器提供每帧的数据。随后函数调用 `vkCmdTraceRaysKHR`,派发光线追踪管线并执行相关的着色器。最后,一个内存屏障(barrier)确保光线追踪图像在交给色调映射器(tonemapper)做后处理之前已经完全写好。
 
 > **译注**:`vkCmdTraceRaysKHR` 的最后三个参数是派发的宽、高、深度。这里按视口大小派发,相当于每个像素启动一次光线生成着色器,着色器中的 `DispatchRaysIndex()` 就是当前像素坐标。
 

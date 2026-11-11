@@ -255,7 +255,7 @@ GPU 上没有指针,树必须存成连续数组。上面的构建代码采用**�
 - 每个节点 32 字节,两个节点正好 64 字节,和常见的缓存行大小一致;
 - 还有一个附带的好处:**父节点下标总是小于子节点**,下面的 refit 会用到这一点。
 
-另一种常见布局是让左右孩子相邻存放、节点只记左孩子下标(右孩子 = 左孩子 + 1),这样两个孩子的数据可以一次读入。两种布局都很常见,本站 [The Next Week:BVH](/raytracing/02-tnw-bvh/01-bvh/) 那一篇则使用了带指针的树。
+另一种常见布局是让左右孩子相邻存放、节点只记左孩子下标(右孩子 = 左孩子 + 1),这样两个孩子的数据可以一次读入。两种布局都很常见,本站 [The Next Week:BVH](/rt-docs/02-tnw-bvh/01-bvh/) 那一篇则使用了带指针的树。
 
 ## 6. 栈式有序遍历
 
@@ -397,5 +397,5 @@ refit 的问题在于:变形幅度大时(例如角色把手臂从身体一侧甩
 - Jacco Bikker,[How to build a BVH 系列](https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/)(从基础到分桶 SAH、refit、TLAS、GPU 遍历的完整系列)
 - Pharr, Jakob, Humphreys,PBR Book 第 4 版:[Bounding Volume Hierarchies](https://pbr-book.org/4ed/Primitives_and_Intersection_Acceleration/Bounding_Volume_Hierarchies)
 - Ingo Wald,《On fast Construction of SAH-based Bounding Volume Hierarchies》,IEEE Symposium on Interactive Ray Tracing, 2007(分桶 SAH 的出处)
-- 本站:[The Next Week:BVH](/raytracing/02-tnw-bvh/01-bvh/)
-- 本站:[光线与三角形 / AABB 相交](/raytracing/05-notes/01-ray-triangle-intersection/)
+- 本站:[The Next Week:BVH](/rt-docs/02-tnw-bvh/01-bvh/)
+- 本站:[光线与三角形 / AABB 相交](/rt-docs/05-notes/01-ray-triangle-intersection/)

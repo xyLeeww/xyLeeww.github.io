@@ -34,8 +34,8 @@ license: "Apache-2.0"
 
 关于这些概念,你可以在以下文档中了解更多:
 
-- [加速结构(Acceleration Structures)](/raytracing/04-nvidia-concepts/01-acceleration-structures/)
-- [着色器绑定表(Shader Binding Table)](/raytracing/04-nvidia-concepts/02-shader-binding-table/)
+- [加速结构(Acceleration Structures)](/rt-docs/04-nvidia-concepts/01-acceleration-structures/)
+- [着色器绑定表(Shader Binding Table)](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)
 
 ### 步骤 1.2:添加光线追踪相关的类成员
 
@@ -115,4 +115,4 @@ vkGetPhysicalDeviceProperties2(m_app->getPhysicalDevice(), &prop2);
 
 ## 下一步
 
-在[阶段 2](/raytracing/03-nvidia-tutorial/06-phase2-as-infrastructure/)中,我们会搭建创建加速结构的基础设施。应用程序仍然使用光栅化,但我们将为光线追踪所需的几何数据打好基础。
+在[阶段 2](/rt-docs/03-nvidia-tutorial/06-phase2-as-infrastructure/)中,我们会搭建创建加速结构的基础设施。应用程序仍然使用光栅化,但我们将为光线追踪所需的几何数据打好基础。

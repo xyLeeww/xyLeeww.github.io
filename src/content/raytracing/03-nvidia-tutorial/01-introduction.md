@@ -50,20 +50,20 @@ license: "Apache-2.0"
 ## 目录
 
 1. **设置说明(Setup Instructions)**(见本页下文)—— 创建工作副本并验证能否构建
-2. **[理解加速结构:BLAS 与 TLAS](/raytracing/03-nvidia-tutorial/03-blas-tlas/)** —— 学习光线追踪所用数据结构的基础知识
-3. **[理解着色器绑定表(SBT)](/raytracing/03-nvidia-tutorial/04-sbt-overview/)** —— 了解光线追踪着色器是如何组织和执行的
+2. **[理解加速结构:BLAS 与 TLAS](/rt-docs/03-nvidia-tutorial/03-blas-tlas/)** —— 学习光线追踪所用数据结构的基础知识
+3. **[理解着色器绑定表(SBT)](/rt-docs/03-nvidia-tutorial/04-sbt-overview/)** —— 了解光线追踪着色器是如何组织和执行的
 4. **[渲染相关缩写与概念](https://github.com/nvpro-samples/vk_raytracing_tutorial_KHR/blob/v2/docs/concepts/rendering.md)** —— 用浅白的语言讲解 BRDF、BSDF、PDF、NEE、MIS 等概念
-5. **[阶段 1:基础设置](/raytracing/03-nvidia-tutorial/05-phase1-foundation/)** —— 添加光线追踪头文件并启用扩展
-6. **[阶段 2:加速结构基础设施](/raytracing/03-nvidia-tutorial/06-phase2-as-infrastructure/)** —— 搭建创建 BLAS/TLAS 的辅助函数
-7. **[阶段 3:基本加速结构](/raytracing/03-nvidia-tutorial/07-phase3-basic-as/)** —— 创建并构建加速结构
-8. **[阶段 4:光线追踪管线设置](/raytracing/03-nvidia-tutorial/08-phase4-rt-pipeline/)** —— 创建管线和 SBT 基础设施
-9. **[阶段 5:基本的光线追踪着色器](/raytracing/03-nvidia-tutorial/09-phase5-shaders/)** —— 实现最简单的光线追踪着色器
-10. **[阶段 6:集成与渲染](/raytracing/03-nvidia-tutorial/10-phase6-integration/)** —— 用光线追踪替换光栅化
-11. **[阶段 7:材质着色](/raytracing/03-nvidia-tutorial/11-phase7-material/)** —— 加入正确的 PBR 材质着色
-12. **[阶段 8:光照与阴影](/raytracing/03-nvidia-tutorial/12-phase8-lighting/)** —— 加入真实感光照和阴影投射
-13. **[教程完成总结](/raytracing/03-nvidia-tutorial/13-summary-helpers/)** —— 回顾你完成了什么,以及下一步做什么
+5. **[阶段 1:基础设置](/rt-docs/03-nvidia-tutorial/05-phase1-foundation/)** —— 添加光线追踪头文件并启用扩展
+6. **[阶段 2:加速结构基础设施](/rt-docs/03-nvidia-tutorial/06-phase2-as-infrastructure/)** —— 搭建创建 BLAS/TLAS 的辅助函数
+7. **[阶段 3:基本加速结构](/rt-docs/03-nvidia-tutorial/07-phase3-basic-as/)** —— 创建并构建加速结构
+8. **[阶段 4:光线追踪管线设置](/rt-docs/03-nvidia-tutorial/08-phase4-rt-pipeline/)** —— 创建管线和 SBT 基础设施
+9. **[阶段 5:基本的光线追踪着色器](/rt-docs/03-nvidia-tutorial/09-phase5-shaders/)** —— 实现最简单的光线追踪着色器
+10. **[阶段 6:集成与渲染](/rt-docs/03-nvidia-tutorial/10-phase6-integration/)** —— 用光线追踪替换光栅化
+11. **[阶段 7:材质着色](/rt-docs/03-nvidia-tutorial/11-phase7-material/)** —— 加入正确的 PBR 材质着色
+12. **[阶段 8:光照与阴影](/rt-docs/03-nvidia-tutorial/12-phase8-lighting/)** —— 加入真实感光照和阴影投射
+13. **[教程完成总结](/rt-docs/03-nvidia-tutorial/13-summary-helpers/)** —— 回顾你完成了什么,以及下一步做什么
 
-> **译注**:原文是单个长文档,本站将其拆分成多个页面。原文目录中没有单独列出的“概述:从光栅化到光线追踪”一节,在本站是 [第 2 页](/raytracing/03-nvidia-tutorial/02-raster-to-rt/)。
+> **译注**:原文是单个长文档,本站将其拆分成多个页面。原文目录中没有单独列出的“概述:从光栅化到光线追踪”一节,在本站是 [第 2 页](/rt-docs/03-nvidia-tutorial/02-raster-to-rt/)。
 
 ## 设置说明
 

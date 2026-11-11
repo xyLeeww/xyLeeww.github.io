@@ -14,14 +14,14 @@ license: "Apache-2.0"
 
 通过这个循序渐进的教程,你已经:
 
-1. **[第 1 阶段](/raytracing/03-nvidia-tutorial/05-phase1-foundation/)**:添加了光线追踪扩展和基础设施
-2. **[第 2 阶段](/raytracing/03-nvidia-tutorial/06-phase2-as-infrastructure/)**:搭建了创建加速结构所需的基础设施
-3. **[第 3 阶段](/raytracing/03-nvidia-tutorial/07-phase3-basic-as/)**:构建了底层加速结构(BLAS)和顶层加速结构(TLAS)
-4. **[第 4 阶段](/raytracing/03-nvidia-tutorial/08-phase4-rt-pipeline/)**:创建了光线追踪管线和着色器绑定表(SBT)的基础设施
-5. **[第 5 阶段](/raytracing/03-nvidia-tutorial/09-phase5-shaders/)**:实现了基本的光线追踪着色器
-6. **[第 6 阶段](/raytracing/03-nvidia-tutorial/10-phase6-integration/)**:把光线追踪集成进渲染循环
-7. **[第 7 阶段](/raytracing/03-nvidia-tutorial/11-phase7-material/)**:增强了材质着色,达到视觉上的一致
-8. **[第 8 阶段](/raytracing/03-nvidia-tutorial/12-phase8-lighting/)**:加入了逼真的光照和阴影投射
+1. **[第 1 阶段](/rt-docs/03-nvidia-tutorial/05-phase1-foundation/)**:添加了光线追踪扩展和基础设施
+2. **[第 2 阶段](/rt-docs/03-nvidia-tutorial/06-phase2-as-infrastructure/)**:搭建了创建加速结构所需的基础设施
+3. **[第 3 阶段](/rt-docs/03-nvidia-tutorial/07-phase3-basic-as/)**:构建了底层加速结构(BLAS)和顶层加速结构(TLAS)
+4. **[第 4 阶段](/rt-docs/03-nvidia-tutorial/08-phase4-rt-pipeline/)**:创建了光线追踪管线和着色器绑定表(SBT)的基础设施
+5. **[第 5 阶段](/rt-docs/03-nvidia-tutorial/09-phase5-shaders/)**:实现了基本的光线追踪着色器
+6. **[第 6 阶段](/rt-docs/03-nvidia-tutorial/10-phase6-integration/)**:把光线追踪集成进渲染循环
+7. **[第 7 阶段](/rt-docs/03-nvidia-tutorial/11-phase7-material/)**:增强了材质着色,达到视觉上的一致
+8. **[第 8 阶段](/rt-docs/03-nvidia-tutorial/12-phase8-lighting/)**:加入了逼真的光照和阴影投射
 
 ### 实现的主要差异
 
@@ -67,8 +67,8 @@ license: "Apache-2.0"
 
 关于更高级的光线追踪技术:
 
-- **[加速结构指南](/raytracing/04-nvidia-concepts/01-acceleration-structures/)**:全面介绍 BLAS/TLAS 的构建、内存管理和优化
-- **[着色器绑定表指南](/raytracing/04-nvidia-concepts/02-shader-binding-table/)**:SBT 的创建、对齐和高级用法的完整参考
+- **[加速结构指南](/rt-docs/04-nvidia-concepts/01-acceleration-structures/)**:全面介绍 BLAS/TLAS 的构建、内存管理和优化
+- **[着色器绑定表指南](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)**:SBT 的创建、对齐和高级用法的完整参考
 
 ## 辅助库与高级实现
 

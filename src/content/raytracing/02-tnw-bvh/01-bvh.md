@@ -8,7 +8,7 @@ sourceTitle: "Ray Tracing: The Next Week · Bounding Volume Hierarchies"
 license: "CC0 1.0"
 ---
 
-> **译注**:本页是系列第二本书《Ray Tracing: The Next Week》的第 3 章。它建立在《Ray Tracing in One Weekend》的代码之上(中文译文见 [/raytracing/01-rtiow/01-overview/](/raytracing/01-rtiow/01-overview/)),并且用到了本书第 2 章“运动模糊(Motion Blur)”中加入的代码(该章未翻译,见[原文](https://raytracing.github.io/books/RayTracingTheNextWeek.html#motionblur)),因此文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。原书用高亮标出每个代码清单中新增或修改的行,这里无法显示高亮,请结合正文对照阅读。
+> **译注**:本页是系列第二本书《Ray Tracing: The Next Week》的第 3 章。它建立在《Ray Tracing in One Weekend》的代码之上(中文译文见[第 1 章](/rt-docs/01-rtiow/01-overview/)),并且用到了本书第 2 章“运动模糊(Motion Blur)”中加入的代码(该章未翻译,见[原文](https://raytracing.github.io/books/RayTracingTheNextWeek.html#motionblur)),因此文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。原书用高亮标出每个代码清单中新增或修改的行,这里无法显示高亮,请结合正文对照阅读。
 
 这一部分是到目前为止,我们正在编写的光线追踪器(ray tracer)中最难、最复杂的部分。我之所以把它放在这一章,一是为了让代码运行得更快,二是因为它会对 `hittable` 做一点重构,这样以后我加入矩形和长方体时,就不必再回头重构它们了。
 

@@ -19,7 +19,7 @@ license: "Apache-2.0"
 
 **预期结果**:加速结构已构建完成,可以用于光线追踪。应用程序仍然使用光栅化(rasterization)进行渲染,但现在已经拥有光线追踪所需的几何数据结构。
 
-**文档**:强烈建议此时阅读[加速结构](/raytracing/04-nvidia-concepts/01-acceleration-structures/)一文。它解释了相关概念以及这里用到的辅助函数。
+**文档**:强烈建议此时阅读[加速结构](/rt-docs/04-nvidia-concepts/01-acceleration-structures/)一文。它解释了相关概念以及这里用到的辅助函数。
 
 ## 代码改动
 

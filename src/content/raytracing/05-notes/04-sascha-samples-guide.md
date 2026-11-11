@@ -237,7 +237,7 @@ void main()
 }
 ```
 
-对照 [Ray Query 与光追管线](/raytracing/05-notes/03-ray-query-vs-pipeline/) 中的参数表:光线标志 `gl_RayFlagsOpaqueEXT`、剔除掩码 `0xff`、`sbtRecordOffset = 0`、`sbtRecordStride = 0`、`missIndex = 0`,最后的 `0` 是负载 `hitValue` 的 location。像素中心加 0.5 再映射到 $[-1, 1]$,用投影逆矩阵还原观察空间方向,再用视图逆矩阵变到世界空间——和光栅化的变换方向正好相反。
+对照 [Ray Query 与光追管线](/rt-docs/05-notes/03-ray-query-vs-pipeline/) 中的参数表:光线标志 `gl_RayFlagsOpaqueEXT`、剔除掩码 `0xff`、`sbtRecordOffset = 0`、`sbtRecordStride = 0`、`missIndex = 0`,最后的 `0` 是负载 `hitValue` 的 location。像素中心加 0.5 再映射到 $[-1, 1]$,用投影逆矩阵还原观察空间方向,再用视图逆矩阵变到世界空间——和光栅化的变换方向正好相反。
 
 最近命中着色器只有一件事:把 `hitAttributeEXT vec2 attribs` 还原成三个重心坐标作为颜色输出([closesthit.rchit](https://github.com/SaschaWillems/Vulkan/blob/d2d49bf7f2d8469ad9fee47b2a43b430d7e10e1b/shaders/glsl/raytracingbasic/closesthit.rchit)):
 
@@ -333,7 +333,7 @@ if (rayQueryGetIntersectionTypeEXT(rayQuery, true) == gl_RayQueryCommittedInters
 | [raytracingpositionfetch](https://github.com/SaschaWillems/Vulkan/tree/d2d49bf7f2d8469ad9fee47b2a43b430d7e10e1b/examples/raytracingpositionfetch) | 用 `VK_KHR_ray_tracing_position_fetch` 在着色器中直接从加速结构取命中三角形的顶点位置 | `raygen.rgen`、`miss.rmiss`、`closesthit.rchit` |
 | [computeraytracing](https://github.com/SaschaWillems/Vulkan/tree/d2d49bf7f2d8469ad9fee47b2a43b430d7e10e1b/examples/computeraytracing) | 不使用光追扩展,在 compute shader 中实现的简单光追器(阴影和反射),可与软件光追对照 | `raytracing.comp`、`texture.vert`、`texture.frag` |
 
-读完本文的两个示例后,推荐接着读 `raytracingshadows`:它的 `closesthit.rchit` 里用 `gl_RayFlagsTerminateOnFirstHitEXT | gl_RayFlagsOpaqueEXT | gl_RayFlagsSkipClosestHitShaderEXT` 发阴影光线,`missIndex = 1` 选中 `shadow.rmiss`,负载放在 location 2——正好是 [上一篇](/raytracing/05-notes/03-ray-query-vs-pipeline/) 6.1 节写法的真实版本,可以和本文的 `rayquery` 对照着看同一种效果的两种实现。
+读完本文的两个示例后,推荐接着读 `raytracingshadows`:它的 `closesthit.rchit` 里用 `gl_RayFlagsTerminateOnFirstHitEXT | gl_RayFlagsOpaqueEXT | gl_RayFlagsSkipClosestHitShaderEXT` 发阴影光线,`missIndex = 1` 选中 `shadow.rmiss`,负载放在 location 2——正好是 [上一篇](/rt-docs/05-notes/03-ray-query-vs-pipeline/) 6.1 节写法的真实版本,可以和本文的 `rayquery` 对照着看同一种效果的两种实现。
 
 ## 自测问题
 
@@ -358,8 +358,8 @@ if (rayQueryGetIntersectionTypeEXT(rayQuery, true) == gl_RayQueryCommittedInters
 
 - 仓库主页:[SaschaWillems/Vulkan](https://github.com/SaschaWillems/Vulkan)(README 中“Hardware accelerated ray tracing”一节列出了全部光追示例)
 - 构建说明:[BUILD.md](https://github.com/SaschaWillems/Vulkan/blob/master/BUILD.md)
-- 本站:[Vulkan 光线追踪:Ray Query 与光追管线](/raytracing/05-notes/03-ray-query-vs-pipeline/)
-- 本站:[NVIDIA 教程:从光栅化到光线追踪](/raytracing/03-nvidia-tutorial/02-raster-to-rt/)
-- 本站:[NVIDIA 概念详解:着色器绑定表](/raytracing/04-nvidia-concepts/02-shader-binding-table/)
+- 本站:[Vulkan 光线追踪:Ray Query 与光追管线](/rt-docs/05-notes/03-ray-query-vs-pipeline/)
+- 本站:[NVIDIA 教程:从光栅化到光线追踪](/rt-docs/03-nvidia-tutorial/02-raster-to-rt/)
+- 本站:[NVIDIA 概念详解:着色器绑定表](/rt-docs/04-nvidia-concepts/02-shader-binding-table/)
 
 示例代码片段摘自 SaschaWillems/Vulkan,MIT License。

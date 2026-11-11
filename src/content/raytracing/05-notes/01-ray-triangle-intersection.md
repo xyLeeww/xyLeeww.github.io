@@ -344,4 +344,4 @@ NaN 是麻烦所在:所有与 NaN 的比较都返回 false,而不同 `min`/`max`
 - Scratchapixel:[Ray-Triangle Intersection: Möller-Trumbore](https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection.html)(配有详细图解,可与本文的推导对照)
 - Tomas Möller, Ben Trumbore,《Fast, Minimum Storage Ray/Triangle Intersection》,Journal of Graphics Tools, 1997(算法原始论文)
 - Sven Woop, Carsten Benthin, Ingo Wald,[《Watertight Ray/Triangle Intersection》](https://jcgt.org/published/0002/01/05/),JCGT 2013
-- 本站:[The Next Week:BVH](/raytracing/02-tnw-bvh/01-bvh/)(用区间(interval)的写法实现 AABB 相交)
+- 本站:[The Next Week:BVH](/rt-docs/02-tnw-bvh/01-bvh/)(用区间(interval)的写法实现 AABB 相交)

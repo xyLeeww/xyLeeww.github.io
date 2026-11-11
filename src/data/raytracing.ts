@@ -62,4 +62,4 @@ export function groupBySection(entries: RtEntry[]) {
     .filter((g) => g.entries.length > 0);
 }
 
-export const entryUrl = (entry: RtEntry) => `/raytracing/${entry.id}/`;
+export const entryUrl = (entry: RtEntry) => `/rt-docs/${entry.id}/`;
