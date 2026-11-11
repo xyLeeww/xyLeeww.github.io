@@ -283,13 +283,50 @@ html { scroll-padding-top: calc(var(--d-navbar-h) + 12px); }
 [data-theme='dark'] .markdown code { border-color: rgba(255, 255, 255, 0.1); }
 
 .markdown pre {
-  border-radius: 8px;
+  border-radius: 6.4px;
   padding: 16px;
   overflow-x: auto;
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.45;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
+
+/* Code theme: Prism "github" light by default (inline styles); github-dark in dark mode. */
+[data-theme='dark'] .markdown pre.astro-code,
+[data-theme='dark'] .markdown pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+}
+
+[data-theme='dark'] .markdown pre.astro-code span { background-color: transparent !important; }
+
+/* Shiki only emits italic/bold for the default (light) theme as CSS variables. */
+[data-theme='light'] .markdown pre.astro-code span {
+  font-style: var(--shiki-light-font-style, normal);
+  font-weight: var(--shiki-light-font-weight, normal);
+}
+
+.dcopy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-family: var(--d-font);
+  border: 1px solid var(--d-border);
+  border-radius: 6px;
+  background: var(--d-bg);
+  color: var(--d-text-soft);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.dcode:hover .dcopy, .dcopy:focus { opacity: 1; }
+.dcode { position: relative; }
 
 .markdown pre code { background: none; border: 0; padding: 0; font-size: inherit; }
 

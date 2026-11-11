@@ -355,6 +355,12 @@ section { margin-bottom: 48px; }
   font-size: 0.9em;
 }
 
+/* Shiki emits italic/bold of the (light) code theme only as CSS variables. */
+.note-content pre.astro-code span {
+  font-style: var(--shiki-light-font-style, normal);
+  font-weight: var(--shiki-light-font-weight, normal);
+}
+
 .note-content p code,
 .note-content li code {
   background: var(--bg-alt);

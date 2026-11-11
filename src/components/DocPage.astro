@@ -77,6 +77,28 @@ const docsUrl = (id: string) => entryUrl(space, id);
   </div>
 
   <script is:inline type="module">
+    // Docusaurus-style "copy" button on code blocks.
+    document.querySelectorAll('.markdown pre.astro-code:not([data-language="mermaid"])').forEach((pre) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'dcode';
+      pre.replaceWith(wrap);
+      wrap.appendChild(pre);
+      const btn = document.createElement('button');
+      btn.className = 'dcopy';
+      btn.type = 'button';
+      btn.textContent = '复制';
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          btn.textContent = '已复制';
+        } catch {
+          btn.textContent = '复制失败';
+        }
+        setTimeout(() => (btn.textContent = '复制'), 1500);
+      });
+      wrap.appendChild(btn);
+    });
+
     // Highlight the heading currently in view in the right-hand TOC.
     const links = [...document.querySelectorAll('.dtoc a')];
     if (links.length) {

@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import prismGithub from './src/shiki/prism-github.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,5 +17,11 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
+    // Light (Prism "github", like Docusaurus) is the inline default for every page; the dark
+    // theme is exposed as --shiki-dark* CSS variables for the /rt-docs/ dark mode.
+    shikiConfig: {
+      themes: { light: prismGithub, dark: 'github-dark' },
+      defaultColor: 'light',
+    },
   },
 });
