@@ -1,20 +1,22 @@
 ---
 import '../styles/docs.css';
 import { getCollection } from 'astro:content';
-import { groupBySection, navTitle } from '../data/raytracing';
+import { groupBySection, navTitle, entryUrl, type DocSpace } from '../data/docs';
 
 interface Props {
   title: string;
+  space: DocSpace;
   /** Show the left docs sidebar (doc pages only). */
   sidebar?: boolean;
   currentId?: string;
 }
 
-const { title, sidebar = false, currentId } = Astro.props;
-const groups = groupBySection(await getCollection('raytracing'));
-const docsUrl = (id: string) => `/rt-docs/${id}/`;
-const firstDoc = groups[0]?.entries[0];
-const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
+const { title, space, sidebar = false, currentId } = Astro.props;
+const groups = groupBySection(space, await getCollection(space.collection));
+const docsUrl = (id: string) => entryUrl(space, id);
+const navLinks = space.navSections
+  .map(({ label, section }) => ({ label, entry: groups.find((g) => g.section.key === section)?.entries[0] }))
+  .filter((l) => l.entry);
 ---
 
 <html lang="zh-CN">
@@ -42,12 +44,11 @@ const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
             <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" /></svg>
           </button>
         )}
-        <a class="dnav-brand" href="/rt-docs/">
+        <a class="dnav-brand" href={`${space.base}/`}>
           <img src="/favicon.svg" alt="" width="28" height="28" />
-          <b>RT 中文翻译</b>
+          <b>{space.brand}</b>
         </a>
-        {firstDoc && <a class="dnav-link" href={docsUrl(firstDoc.id)}>教程</a>}
-        {notes && <a class="dnav-link" href={docsUrl(notes.id)}>学习笔记</a>}
+        {navLinks.map((l) => <a class="dnav-link" href={docsUrl(l.entry!.id)}>{l.label}</a>)}
       </div>
       <div class="dnav-right">
         <a class="dnav-link" href="/">Ava Li 主页</a>
@@ -89,8 +90,7 @@ const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
       <div class="dfooter-links">
         <div>
           <h4>资料</h4>
-          <a href="https://raytracing.github.io/" target="_blank" rel="noopener">Ray Tracing in One Weekend ↗</a>
-          <a href="https://github.com/nvpro-samples/vk_raytracing_tutorial_KHR" target="_blank" rel="noopener">NVIDIA vk_raytracing_tutorial_KHR ↗</a>
+          {space.footerLinks.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}</a>)}
         </div>
         <div>
           <h4>More</h4>
@@ -98,7 +98,7 @@ const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
           <a href="https://github.com/xyLeeww/xyLeeww.github.io" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
       </div>
-      <p>Copyright © {new Date().getFullYear()} Ava Li. 译文版权与许可遵循各原文。Built with Astro.</p>
+      <p>Copyright © {new Date().getFullYear()} Ava Li. {space.copyright}Built with Astro.</p>
     </footer>
 
     <script is:inline>

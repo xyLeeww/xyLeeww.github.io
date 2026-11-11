@@ -1,0 +1,18 @@
+---
+import DocPage from '../../components/DocPage.astro';
+import { getCollection } from 'astro:content';
+import { sortEntries } from '../../data/docs';
+import { linuxSpace } from '../../data/linux';
+
+export async function getStaticPaths() {
+  const entries = sortEntries(linuxSpace, await getCollection('linuxdrivers'));
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: entries[i - 1] ?? null, next: entries[i + 1] ?? null },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+---
+
+<DocPage space={linuxSpace} entry={entry} prev={prev} next={next} />

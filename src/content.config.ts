@@ -11,18 +11,27 @@ const notes = defineCollection({
   }),
 });
 
-// Chinese ray tracing study materials; the top-level folder is the section key (see src/data/raytracing.ts).
-const raytracing = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/raytracing' }),
-  schema: z.object({
-    title: z.string(),
-    order: z.number(),
-    description: z.string().optional(),
-    kind: z.enum(['translation', 'original']).default('translation'),
-    source: z.string().url().optional(),
-    sourceTitle: z.string().optional(),
-    license: z.string().optional(),
-  }),
+// Docs spaces share one schema; the top-level folder is the section key (see src/data/docs.ts).
+const docSchema = z.object({
+  title: z.string(),
+  order: z.number(),
+  description: z.string().optional(),
+  kind: z.enum(['translation', 'original']).default('translation'),
+  source: z.string().url().optional(),
+  sourceTitle: z.string().optional(),
+  license: z.string().optional(),
 });
 
-export const collections = { notes, raytracing };
+// Chinese ray tracing study materials (src/data/raytracing.ts).
+const raytracing = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/raytracing' }),
+  schema: docSchema,
+});
+
+// Linux driver development study notes (src/data/linux.ts).
+const linuxdrivers = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/linuxdrivers' }),
+  schema: docSchema,
+});
+
+export const collections = { notes, raytracing, linuxdrivers };

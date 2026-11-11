@@ -1,11 +1,12 @@
 ---
 import DocsLayout from '../../layouts/DocsLayout.astro';
 import { getCollection } from 'astro:content';
-import { groupBySection } from '../../data/raytracing';
+import { groupBySection, entryUrl } from '../../data/docs';
+import { rtSpace } from '../../data/raytracing';
 
-const groups = groupBySection(await getCollection('raytracing'));
+const groups = groupBySection(rtSpace, await getCollection('raytracing'));
 const first = groups[0]?.entries[0];
-const docsUrl = (id: string) => `/rt-docs/${id}/`;
+const docsUrl = (id: string) => entryUrl(rtSpace, id);
 const startOf = (key: string) => groups.find((g) => g.section.key === key)?.entries[0];
 
 const features = [
@@ -30,7 +31,7 @@ const features = [
 ];
 ---
 
-<DocsLayout title="光线追踪中文翻译 | RT 中文翻译">
+<DocsLayout title="光线追踪中文翻译 | RT 中文翻译" space={rtSpace}>
   <header class="dhero">
     <h1>光线追踪中文翻译</h1>
     <p>Ray Tracing in One Weekend · NVIDIA Vulkan Ray Tracing · By Ava Li</p>
