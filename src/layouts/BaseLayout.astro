@@ -50,8 +50,10 @@ const { title = 'Ava Li' } = Astro.props;
             <li><a href="/#skills">Skills</a></li>
             <li><a href="/#projects">Projects</a></li>
             <li><a href="/#notes">Notes</a></li>
+            <li><a href="/raytracing/">Ray Tracing 中文资料</a></li>
           </slot>
         </ul>
+        <slot name="sidebar-extra" />
       </aside>
 
       <!-- Main -->

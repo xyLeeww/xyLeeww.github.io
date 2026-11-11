@@ -11,4 +11,18 @@ const notes = defineCollection({
   }),
 });
 
-export const collections = { notes };
+// Chinese ray tracing study materials; the top-level folder is the section key (see src/data/raytracing.ts).
+const raytracing = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/raytracing' }),
+  schema: z.object({
+    title: z.string(),
+    order: z.number(),
+    description: z.string().optional(),
+    kind: z.enum(['translation', 'original']).default('translation'),
+    source: z.string().url().optional(),
+    sourceTitle: z.string().optional(),
+    license: z.string().optional(),
+  }),
+});
+
+export const collections = { notes, raytracing };

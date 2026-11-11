@@ -1,0 +1,27 @@
+---
+import { groupBySection, entryUrl, type RtEntry } from '../data/raytracing';
+
+interface Props {
+  entries: RtEntry[];
+  currentId?: string;
+}
+
+const { entries, currentId } = Astro.props;
+const groups = groupBySection(entries);
+---
+
+<nav class="rt-toc" aria-label="光线追踪资料目录">
+  <a class="rt-toc-home" href="/raytracing/">光线追踪中文资料</a>
+  {groups.map(({ section, entries }) => (
+    <details open={!currentId || entries.some((e) => e.id === currentId)}>
+      <summary>{section.title}</summary>
+      <ul>
+        {entries.map((e) => (
+          <li>
+            <a href={entryUrl(e)} class={e.id === currentId ? 'active' : undefined}>{e.data.title}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  ))}
+</nav>
