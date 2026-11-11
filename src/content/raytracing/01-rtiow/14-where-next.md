@@ -14,7 +14,7 @@ license: "CC0 1.0"
 
 **代码清单 88**:`main.cc` 最终场景
 
-```cpp
+```cpp {4-42,46-57}
 int main() {
     hittable_list world;
 

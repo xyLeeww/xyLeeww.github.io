@@ -87,7 +87,7 @@ $$
 
 **代码清单 71**:`vec3.h` 折射函数
 
-```cpp
+```cpp {8-13}
 ...
 
 inline vec3 reflect(const vec3& v, const vec3& n) {
@@ -107,7 +107,7 @@ inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
 
 **代码清单 72**:`material.h` 总是发生折射的电介质材质类
 
-```cpp
+```cpp {8-28}
 ...
 
 class metal : public material {
@@ -142,7 +142,7 @@ class dielectric : public material {
 
 **代码清单 73**:`main.cc` 把左边的球改成玻璃
 
-```cpp
+```cpp {3}
 auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
 auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
 auto material_left   = make_shared<dielectric>(1.50);
@@ -220,7 +220,7 @@ if (ri * sin_theta > 1.0) {
 
 **代码清单 76**:`material.h` 带反射的电介质材质类
 
-```cpp
+```cpp {11-22}
 class dielectric : public material {
   public:
     dielectric(double refraction_index) : refraction_index(refraction_index) {}
@@ -271,7 +271,7 @@ $$
 
 **代码清单 77**:`main.cc` 左边的球是水中的气泡
 
-```cpp
+```cpp {3}
 auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
 auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
 auto material_left   = make_shared<dielectric>(1.00 / 1.33);
@@ -290,7 +290,7 @@ auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
 **代码清单 78**:`material.h` 完整的玻璃材质
 
-```cpp
+```cpp {18,33-38}
 class dielectric : public material {
   public:
     dielectric(double refraction_index) : refraction_index(refraction_index) {}
@@ -344,7 +344,7 @@ class dielectric : public material {
 
 **代码清单 79**:`main.cc` 带有空心玻璃球的场景
 
-```cpp
+```cpp {4-5,11}
 ...
 auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
 auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));

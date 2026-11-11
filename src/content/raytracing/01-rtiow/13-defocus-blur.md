@@ -45,7 +45,7 @@ license: "CC0 1.0"
 
 **代码清单 85**:`vec3.h` 生成单位圆盘内的随机点
 
-```cpp
+```cpp {7-13}
 ...
 
 inline vec3 unit_vector(const vec3& u) {
@@ -65,9 +65,9 @@ inline vec3 random_in_unit_disk() {
 
 现在我们来更新相机,让光线从散焦圆盘上发出:
 
-**代码清单 86**:`camera.h` 景深可调的相机(去掉 `auto focal_length = (lookfrom - lookat).length();` 一行,改用 `focus_dist`)
+**代码清单 86**:`camera.h` 景深可调的相机
 
-```cpp
+```cpp {13-14,26-27,41,58,61-64,68-69,76,86-90} del={38}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -169,7 +169,7 @@ class camera {
 
 **代码清单 87**:`main.cc` 带景深效果的场景相机
 
-```cpp
+```cpp {16-17}
 int main() {
     ...
 

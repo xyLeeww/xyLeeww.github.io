@@ -45,7 +45,7 @@ class material {
 
 **代码清单 59**:`hittable.h` 添加了材质指针的命中记录
 
-```cpp
+```cpp {1,7}
 class material;
 
 class hit_record {
@@ -69,7 +69,7 @@ class hit_record {
 
 **代码清单 60**:`sphere.h` 加入材质信息的光线-球体求交
 
-```cpp
+```cpp {3-5,14,22}
 class sphere : public hittable {
   public:
     sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {
@@ -103,7 +103,7 @@ class sphere : public hittable {
 
 **代码清单 61**:`material.h` 新的 lambertian 材质类
 
-```cpp
+```cpp {6-20}
 class material {
     ...
 };
@@ -136,7 +136,7 @@ class lambertian : public material {
 
 **代码清单 62**:`vec3.h` `vec3::near_zero()` 方法
 
-```cpp
+```cpp {9-13}
 class vec3 {
     ...
 
@@ -157,7 +157,7 @@ class vec3 {
 
 **代码清单 63**:`material.h` 万无一失的朗伯散射
 
-```cpp
+```cpp {10-12}
 class lambertian : public material {
   public:
     lambertian(const color& albedo) : albedo(albedo) {}
@@ -193,7 +193,7 @@ class lambertian : public material {
 
 **代码清单 64**:`vec3.h` vec3 反射函数
 
-```cpp
+```cpp {8-10}
 ...
 
 inline vec3 random_on_hemisphere(const vec3& normal) {
@@ -210,7 +210,7 @@ inline vec3 reflect(const vec3& v, const vec3& n) {
 
 **代码清单 65**:`material.h` 带反射函数的金属材质
 
-```cpp
+```cpp {8-22}
 ...
 
 class lambertian : public material {
@@ -239,7 +239,7 @@ class metal : public material {
 
 **代码清单 66**:`camera.h` 使用散射反射的光线颜色
 
-```cpp
+```cpp {2,17-21}
 #include "hittable.h"
 #include "material.h"
 ...
@@ -274,7 +274,7 @@ class camera {
 
 **代码清单 67**:`sphere.h` 用材质初始化球体
 
-```cpp
+```cpp {3-4}
 class sphere : public hittable {
   public:
     sphere(const point3& center, double radius, shared_ptr<material> mat)
@@ -290,7 +290,7 @@ class sphere : public hittable {
 
 **代码清单 68**:`main.cc` 带有金属球的场景
 
-```cpp
+```cpp {6,13-21}
 #include "rtweekend.h"
 
 #include "camera.h"
@@ -340,7 +340,7 @@ int main() {
 
 **代码清单 69**:`material.h` 金属材质的模糊度
 
-```cpp
+```cpp {3,8,11,16}
 class metal : public material {
   public:
     metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
@@ -364,7 +364,7 @@ class metal : public material {
 
 **代码清单 70**:`main.cc` 带模糊度的金属球
 
-```cpp
+```cpp {5-6}
 int main() {
     ...
     auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));

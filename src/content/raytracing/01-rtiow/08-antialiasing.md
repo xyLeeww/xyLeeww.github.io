@@ -24,11 +24,9 @@ license: "CC0 1.0"
 
 一种简单的做法是使用 `<cstdlib>` 中的 `std::rand()` 函数,它返回 0 到 `RAND_MAX` 之间的一个随机整数。因此,把下面的代码片段加入 `rtweekend.h`,就能得到我们想要的实数随机数:
 
-> **译注**:原书会高亮显示每个代码清单中新增或修改的行,本站的代码块无法显示这种高亮,请对照前后代码清单查看改动。
-
 **代码清单 41**:`rtweekend.h` `random_double()` 函数
 
-```cpp
+```cpp {2,15-23}
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -58,7 +56,7 @@ C++ 传统上并没有标准的随机数生成器,不过较新的 C++ 版本通�
 
 **代码清单 42**:`rtweekend.h` `random_double()` 的另一种实现
 
-```cpp
+```cpp {4,9-13}
 ...
 
 
@@ -90,7 +88,7 @@ inline double random_double(double min, double max) {
 
 **代码清单 43**:`interval.h` `interval::clamp()` 工具函数
 
-```cpp
+```cpp {10-14}
 class interval {
   public:
     ...
@@ -113,7 +111,7 @@ class interval {
 
 **代码清单 44**:`color.h` 支持多重采样的 `write_color()` 函数
 
-```cpp
+```cpp {1,12-15}
 #include "interval.h"
 #include "vec3.h"
 
@@ -139,7 +137,7 @@ void write_color(std::ostream& out, const color& pixel_color) {
 
 **代码清单 45**:`camera.h` 带有每像素采样数参数的相机
 
-```cpp
+```cpp {5,15-20,29,40,47-65}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -220,7 +218,7 @@ class camera {
 
 **代码清单 46**:`main.cc` 设置新的每像素采样数参数
 
-```cpp
+```cpp {8}
 int main() {
     ...
 

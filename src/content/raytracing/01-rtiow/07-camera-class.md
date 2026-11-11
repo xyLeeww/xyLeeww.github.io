@@ -56,7 +56,7 @@ class camera {
 
 **代码清单 38**:`camera.h` camera::ray_color 函数
 
-```cpp
+```cpp {9-17}
 class camera {
   ...
 
@@ -84,7 +84,7 @@ class camera {
 
 **代码清单 39**:`camera.h` 可以工作的 camera 类
 
-```cpp
+```cpp {3-24,27-56}
 class camera {
   public:
     double aspect_ratio = 1.0;  // Ratio of image width over height
@@ -152,9 +152,9 @@ class camera {
 
 下面是大幅精简后的 main:
 
-**代码清单 40**:`main.cc` 使用新相机的新 main(删除原来的 `ray_color()` 函数)
+**代码清单 40**:`main.cc` 使用新相机的新 main
 
-```cpp
+```cpp {4,15-25} del={10-12}
 #include "rtweekend.h"
 
 

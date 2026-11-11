@@ -26,7 +26,7 @@ license: "CC0 1.0"
 
 **代码清单 12**:`main.cc` 在球体上渲染表面法线
 
-```cpp
+```cpp {1,9-13,17-21}
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     auto a = dot(r.direction(), r.direction());
@@ -119,7 +119,7 @@ $$
 
 **代码清单 14**:`main.cc` 光线-球体求交代码(化简后)
 
-```cpp
+```cpp {3-6,11}
 double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     auto a = r.direction().length_squared();
@@ -263,7 +263,7 @@ if (dot(ray_direction, outward_normal) > 0.0) {
 
 **代码清单 19**:`hittable.h` 为 hit_record 添加正面(front face)跟踪
 
-```cpp
+```cpp {6-14}
 class hit_record {
   public:
     point3 p;
@@ -285,7 +285,7 @@ class hit_record {
 
 **代码清单 20**:`sphere.h` 带法线朝向判断的 sphere 类
 
-```cpp
+```cpp {9-10}
 class sphere : public hittable {
   public:
     ...
@@ -435,21 +435,21 @@ inline double degrees_to_radians(double degrees) {
 
 程序源文件会首先包含 `rtweekend.h`,这样其他所有头文件(我们的大部分代码都在头文件里)都可以默认 `rtweekend.h` 已经被包含了。头文件仍然需要显式包含它所需的其他头文件。基于这些前提,我们对代码做一些更新。
 
-**代码清单 25**:`color.h` 假定已包含 rtweekend.h(删除下面这一行)
+**代码清单 25**:`color.h` 假定已包含 rtweekend.h
 
-```cpp
+```cpp del={1}
 #include <iostream>
 ```
 
-**代码清单 26**:`hittable.h` 假定已包含 rtweekend.h(删除下面这一行)
+**代码清单 26**:`hittable.h` 假定已包含 rtweekend.h
 
-```cpp
+```cpp del={1}
 #include "ray.h"
 ```
 
-**代码清单 27**:`hittable_list.h` 假定已包含 rtweekend.h(删除 `#include <memory>` 以及两行 `using`,保留 `#include <vector>`)
+**代码清单 27**:`hittable_list.h` 假定已包含 rtweekend.h
 
-```cpp
+```cpp del={1,5-6}
 #include <memory>
 #include <vector>
 
@@ -458,24 +458,24 @@ using std::make_shared;
 using std::shared_ptr;
 ```
 
-**代码清单 28**:`sphere.h` 假定已包含 rtweekend.h(删除下面这一行)
+**代码清单 28**:`sphere.h` 假定已包含 rtweekend.h
 
-```cpp
+```cpp del={1}
 #include "vec3.h"
 ```
 
-**代码清单 29**:`vec3.h` 假定已包含 rtweekend.h(删除下面两行)
+**代码清单 29**:`vec3.h` 假定已包含 rtweekend.h
 
-```cpp
+```cpp del={1-2}
 #include <cmath>
 #include <iostream>
 ```
 
 下面是新的 main:
 
-**代码清单 30**:`main.cc` 使用 hittable 的新 main(删除 `#include "color.h"`、`#include "ray.h"`、`#include "vec3.h"`、`#include <iostream>` 以及整个 `hit_sphere()` 函数)
+**代码清单 30**:`main.cc` 使用 hittable 的新 main
 
-```cpp
+```cpp {1,7-9,20-24,43-48,82} del={4-6,12-17}
 #include "rtweekend.h"
 
 
@@ -611,7 +611,7 @@ const interval interval::universe = interval(-infinity, +infinity);
 
 **代码清单 32**:`rtweekend.h` 包含新的 interval 类
 
-```cpp
+```cpp {4}
 // Common Headers
 
 #include "color.h"
@@ -622,7 +622,7 @@ const interval interval::universe = interval(-infinity, +infinity);
 
 **代码清单 33**:`hittable.h` 使用 interval 的 hittable::hit()
 
-```cpp
+```cpp {4}
 class hittable {
   public:
     ...
@@ -632,7 +632,7 @@ class hittable {
 
 **代码清单 34**:`hittable_list.h` 使用 interval 的 hittable_list::hit()
 
-```cpp
+```cpp {4,7,10}
 class hittable_list : public hittable {
   public:
     ...
@@ -657,7 +657,7 @@ class hittable_list : public hittable {
 
 **代码清单 35**:`sphere.h` 使用 interval 的 sphere
 
-```cpp
+```cpp {4,9,11}
 class sphere : public hittable {
   public:
     ...
@@ -679,7 +679,7 @@ class sphere : public hittable {
 
 **代码清单 36**:`main.cc` 使用 interval 的新 main
 
-```cpp
+```cpp {3}
 color ray_color(const ray& r, const hittable& world) {
     hit_record rec;
     if (world.hit(r, interval(0, infinity), rec)) {

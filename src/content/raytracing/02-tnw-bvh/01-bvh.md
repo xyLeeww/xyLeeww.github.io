@@ -8,7 +8,7 @@ sourceTitle: "Ray Tracing: The Next Week · Bounding Volume Hierarchies"
 license: "CC0 1.0"
 ---
 
-> **译注**:本页是系列第二本书《Ray Tracing: The Next Week》的第 3 章。它建立在《Ray Tracing in One Weekend》的代码之上(中文译文见[第 1 章](/rt-docs/01-rtiow/01-overview/)),并且用到了本书第 2 章“运动模糊(Motion Blur)”中加入的代码(该章未翻译,见[原文](https://raytracing.github.io/books/RayTracingTheNextWeek.html#motionblur)),因此文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。原书用高亮标出每个代码清单中新增或修改的行,这里无法显示高亮,请结合正文对照阅读。
+> **译注**:本页是系列第二本书《Ray Tracing: The Next Week》的第 3 章。它建立在《Ray Tracing in One Weekend》的代码之上(中文译文见[第 1 章](/rt-docs/01-rtiow/01-overview/)),并且用到了本书第 2 章“运动模糊(Motion Blur)”中加入的代码(该章未翻译,见[原文](https://raytracing.github.io/books/RayTracingTheNextWeek.html#motionblur)),因此文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。代码清单中黄色背景的行是新增或修改的代码,红色删除线的行是需要删掉的代码。
 
 这一部分是到目前为止,我们正在编写的光线追踪器(ray tracer)中最难、最复杂的部分。我之所以把它放在这一章,一是为了让代码运行得更快,二是因为它会对 `hittable` 做一点重构,这样以后我加入矩形和长方体时,就不必再回头重构它们了。
 
@@ -146,7 +146,7 @@ bool overlaps(t_interval1, t_interval2)
 
 **代码清单 7**:`interval.h` `interval::expand()` 方法
 
-```cpp
+```cpp {10-13}
 class interval {
   public:
     ...
@@ -236,7 +236,7 @@ class aabb {
 
 **代码清单 9**:`hittable.h` 带包围盒的 hittable 类
 
-```cpp
+```cpp {1,13}
 #include "aabb.h"
 
 class material;
@@ -257,7 +257,7 @@ class hittable {
 
 **代码清单 10**:`sphere.h` 带包围盒的球体
 
-```cpp
+```cpp {5-9,13,19}
 class sphere : public hittable {
   public:
     // Stationary Sphere
@@ -286,7 +286,7 @@ class sphere : public hittable {
 
 **代码清单 11**:`sphere.h` 带包围盒的运动球体
 
-```cpp
+```cpp {8-14}
 class sphere : public hittable {
   public:
     ...
@@ -310,7 +310,7 @@ class sphere : public hittable {
 
 **代码清单 12**:`interval.h` 由两个区间构造区间的构造函数
 
-```cpp
+```cpp {9-13}
 class interval {
   public:
     double min, max;
@@ -333,7 +333,7 @@ class interval {
 
 **代码清单 13**:`aabb.h` 由两个 AABB 构造 AABB 的构造函数
 
-```cpp
+```cpp {9-13}
 class aabb {
   public:
     ...
@@ -358,7 +358,7 @@ class aabb {
 
 **代码清单 14**:`hittable_list.h` 带包围盒的 hittable 列表
 
-```cpp
+```cpp {1,13,20-23}
 #include "aabb.h"
 #include "hittable.h"
 
@@ -447,7 +447,7 @@ class bvh_node : public hittable {
 
 **代码清单 16**:`bvh.h` 包围体层次结构节点
 
-```cpp
+```cpp {5,12-33}
 #include "aabb.h"
 #include "hittable.h"
 #include "hittable_list.h"
@@ -491,7 +491,7 @@ class bvh_node : public hittable {
 
 **代码清单 17**:`rtweekend.h` 返回某个范围内随机整数的函数
 
-```cpp
+```cpp {8-11}
 ...
 
 inline double random_double(double min, double max) {
@@ -517,7 +517,7 @@ inline int random_int(int min, int max) {
 
 **代码清单 18**:`bvh.h` BVH 比较函数,X 轴
 
-```cpp
+```cpp {9-27}
 class bvh_node : public hittable {
   ...
 
@@ -552,7 +552,7 @@ class bvh_node : public hittable {
 
 **代码清单 19**:`main.cc` 使用 BVH 的随机球体场景
 
-```cpp
+```cpp {3,19}
 #include "rtweekend.h"
 
 #include "bvh.h"
@@ -589,9 +589,9 @@ int main() {
 
 有了包围盒之后,就把划分轴设为最长边所在的那根轴。我们先假设有一个函数能替我们完成这件事:`aabb::longest_axis()`。最后,由于我们已经预先计算了这一段物体的包围盒,就可以删掉原来那行把包围盒计算为左右两侧并集的代码。
 
-**代码清单 20**:`bvh.h` 为 BVH 中的一段物体构建包围盒(删去末尾的 `bbox = aabb(left->bounding_box(), right->bounding_box());` 一行)
+**代码清单 20**:`bvh.h` 为 BVH 中的一段物体构建包围盒
 
-```cpp
+```cpp {5-10} del={18}
 class bvh_node : public hittable {
   public:
     ...
@@ -619,7 +619,7 @@ class bvh_node : public hittable {
 
 **代码清单 21**:`aabb.h` 新的 aabb 常量和 `longest_axis()` 函数
 
-```cpp
+```cpp {9-18,21-22}
 class aabb {
   public:
     ...

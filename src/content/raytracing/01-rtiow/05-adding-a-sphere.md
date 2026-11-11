@@ -105,9 +105,9 @@ $$
 
 如果我们把这些数学硬编码到程序中,就可以测试代码:在 z 轴上 -1 的位置放一个小球,然后把所有与它相交的像素涂成红色。
 
-**代码清单 11**:`main.cc` 渲染一个红色球体(新增 `hit_sphere()` 函数,并在 `ray_color()` 开头加入命中球体时返回红色的判断)
+**代码清单 11**:`main.cc` 渲染一个红色球体
 
-```cpp
+```cpp {1-8,11-12}
 bool hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = center - r.origin();
     auto a = dot(r.direction(), r.direction());

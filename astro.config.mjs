@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import prismGithub from './src/shiki/prism-github.mjs';
+import transformerLineMarks from './src/shiki/line-marks.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,6 +23,7 @@ export default defineConfig({
     shikiConfig: {
       themes: { light: prismGithub, dark: 'github-dark' },
       defaultColor: 'light',
+      transformers: [transformerLineMarks()],
     },
   },
 });

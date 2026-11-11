@@ -108,9 +108,9 @@ auto viewport_width = viewport_height * (double(image_width)/image_height);
 
 综合以上内容,下面是实现相机的代码。我们会先放一个桩函数 `ray_color(const ray& r)`,它返回给定场景光线的颜色——目前我们让它始终返回黑色。
 
-**代码清单 9**:`main.cc` 创建场景光线(新增 `#include "ray.h"`、`ray_color()` 函数、图像与相机设置部分,以及内层循环中生成光线并计算颜色的代码)
+**代码清单 9**:`main.cc` 创建场景光线
 
-```cpp
+```cpp {2,8-10,17-42,51-55}
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"
@@ -190,9 +190,9 @@ $$
 
 把这些全部放在一起,我们得到:
 
-**代码清单 10**:`main.cc` 渲染从蓝到白的渐变(`ray_color()` 的函数体改为下面三行)
+**代码清单 10**:`main.cc` 渲染从蓝到白的渐变
 
-```cpp
+```cpp {9-11}
 #include "color.h"
 #include "ray.h"
 #include "vec3.h"

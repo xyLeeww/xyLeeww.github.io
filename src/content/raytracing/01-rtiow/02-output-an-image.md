@@ -143,9 +143,9 @@ P3
 
 我们的程序把图像输出到标准输出流(`std::cout`),所以保持这一点不变,改为把进度写到日志输出流(`std::clog`):
 
-**代码清单 3**:`main.cc` 带进度报告的主渲染循环(新增两行 `std::clog` 输出)
+**代码清单 3**:`main.cc` 带进度报告的主渲染循环
 
-```cpp
+```cpp {2,16}
     for (int j = 0; j < image_height; ++j) {
         std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         for (int i = 0; i < image_width; i++) {

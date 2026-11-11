@@ -153,9 +153,9 @@ void write_color(std::ostream& out, const color& pixel_color) {
 
 现在我们可以修改 main,让它同时使用这两个文件:
 
-**代码清单 6**:`main.cc` 第一张 PPM 图像的最终代码(新增两条 `#include`,并在内层循环中改用 `color` 与 `write_color`)
+**代码清单 6**:`main.cc` 第一张 PPM 图像的最终代码
 
-```cpp
+```cpp {1-2,20-21}
 #include "color.h"
 #include "vec3.h"
 

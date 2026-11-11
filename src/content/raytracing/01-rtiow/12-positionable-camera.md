@@ -20,7 +20,7 @@ license: "CC0 1.0"
 
 **代码清单 80**:`camera.h` 视场角(fov)可调的相机
 
-```cpp
+```cpp {8,26-28}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -73,7 +73,7 @@ class camera {
 
 **代码清单 81**:`main.cc` 使用广角相机的场景
 
-```cpp
+```cpp {4-10,19}
 int main() {
     hittable_list world;
 
@@ -118,7 +118,7 @@ int main() {
 
 **代码清单 82**:`camera.h` 可定位、可定向的相机
 
-```cpp
+```cpp {9-11,22,30,33,39-42,45-46,53}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -185,7 +185,7 @@ class camera {
 
 **代码清单 83**:`main.cc` 使用另一个视点的场景
 
-```cpp
+```cpp {4-14,24-26}
 int main() {
     hittable_list world;
 
@@ -225,7 +225,7 @@ int main() {
 
 **代码清单 84**:`main.cc` 修改视场角
 
-```cpp
+```cpp {1}
     cam.vfov     = 20;
 ```
 

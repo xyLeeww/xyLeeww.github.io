@@ -22,11 +22,9 @@ license: "CC0 1.0"
 
 这种非常直观的材质是最简单的一种漫反射——事实上,许多早期的光线追踪论文都使用了这种漫反射方法(后来才采用了一种更精确的方法,我们稍后也会实现它)。目前我们还没有办法随机地反射一条光线,所以需要在向量工具头文件中添加几个函数。首先需要的是生成任意随机向量的能力:
 
-> **译注**:原书会高亮显示每个代码清单中新增或修改的行,本站的代码块无法显示这种高亮,请对照前后代码清单查看改动。
-
 **代码清单 47**:`vec3.h` `vec3` 随机工具函数
 
-```cpp
+```cpp {10-16}
 class vec3 {
   public:
     ...
@@ -64,7 +62,7 @@ class vec3 {
 
 **代码清单 48**:`vec3.h` `random_unit_vector()` 函数,第一版
 
-```cpp
+```cpp {8-15}
 ...
 
 inline vec3 unit_vector(const vec3& v) {
@@ -88,7 +86,7 @@ inline vec3 random_unit_vector() {
 
 **代码清单 49**:`vec3.h` `random_unit_vector()` 函数,第二版
 
-```cpp
+```cpp {5}
 inline vec3 random_unit_vector() {
     while (true) {
         auto p = vec3::random(-1,1);
@@ -107,7 +105,7 @@ inline vec3 random_unit_vector() {
 
 **代码清单 50**:`vec3.h` `random_on_hemisphere()` 函数
 
-```cpp
+```cpp {13-19}
 ...
 
 inline vec3 random_unit_vector() {
@@ -133,7 +131,7 @@ inline vec3 random_on_hemisphere(const vec3& normal) {
 
 **代码清单 51**:`camera.h` 使用随机光线方向的 `ray_color()`
 
-```cpp
+```cpp {9-10}
 class camera {
   ...
   private:
@@ -163,7 +161,7 @@ class camera {
 
 **代码清单 52**:`camera.h` 带有深度限制的 `camera::ray_color()`
 
-```cpp
+```cpp {6,19,30-33,39}
 class camera {
   public:
     double aspect_ratio      = 1.0;  // Ratio of image width over height
@@ -216,7 +214,7 @@ class camera {
 
 **代码清单 53**:`main.cc` 使用新的光线深度限制
 
-```cpp
+```cpp {9}
 int main() {
     ...
 
@@ -241,7 +239,7 @@ int main() {
 
 **代码清单 54**:`camera.h` 带容差地计算反射光线的起点
 
-```cpp
+```cpp {13}
 class camera {
   ...
   private:
@@ -286,7 +284,7 @@ class camera {
 
 **代码清单 55**:`camera.h` 替换了漫反射方法的 `ray_color()`
 
-```cpp
+```cpp {11}
 class camera {
     ...
     color ray_color(const ray& r, int depth, const hittable& world) const {
@@ -327,7 +325,7 @@ class camera {
 
 **代码清单 56**:`camera.h` 反射率为 10% 的 `ray_color()`
 
-```cpp
+```cpp {12}
 class camera {
     ...
     color ray_color(const ray& r, int depth, const hittable& world) const {
@@ -359,7 +357,7 @@ class camera {
 
 **代码清单 57**:`color.h` 带伽马校正的 `write_color()`
 
-```cpp
+```cpp {1-7,15-18}
 inline double linear_to_gamma(double linear_component)
 {
     if (linear_component > 0)
