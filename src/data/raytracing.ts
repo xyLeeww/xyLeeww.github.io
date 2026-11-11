@@ -63,3 +63,6 @@ export function groupBySection(entries: RtEntry[]) {
 }
 
 export const entryUrl = (entry: RtEntry) => `/rt-docs/${entry.id}/`;
+
+// Sidebar label: drop the trailing "(English Title)" that page titles carry.
+export const navTitle = (entry: RtEntry) => entry.data.title.replace(/\s*[((][^()()]*[A-Za-z][^()()]*[))]\s*$/, '');

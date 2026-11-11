@@ -1,7 +1,7 @@
 ---
 import '../styles/docs.css';
 import { getCollection } from 'astro:content';
-import { groupBySection } from '../data/raytracing';
+import { groupBySection, navTitle } from '../data/raytracing';
 
 interface Props {
   title: string;
@@ -70,7 +70,7 @@ const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
                   <ul>
                     {entries.map((e) => (
                       <li>
-                        <a href={docsUrl(e.id)} class:list={{ active: e.id === currentId }}>{e.data.title}</a>
+                        <a href={docsUrl(e.id)} class:list={{ active: e.id === currentId }}>{navTitle(e)}</a>
                       </li>
                     ))}
                   </ul>
