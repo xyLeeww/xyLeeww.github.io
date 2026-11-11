@@ -1,0 +1,114 @@
+---
+import '../styles/docs.css';
+import { getCollection } from 'astro:content';
+import { groupBySection } from '../data/raytracing';
+
+interface Props {
+  title: string;
+  /** Show the left docs sidebar (doc pages only). */
+  sidebar?: boolean;
+  currentId?: string;
+}
+
+const { title, sidebar = false, currentId } = Astro.props;
+const groups = groupBySection(await getCollection('raytracing'));
+const docsUrl = (id: string) => `/rt-docs/${id}/`;
+const firstDoc = groups[0]?.entries[0];
+const notes = groups.find((g) => g.section.key === '05-notes')?.entries[0];
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" crossorigin="anonymous" />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply the saved/system color theme before first paint to avoid a flash.
+      (() => {
+        const saved = localStorage.getItem('rt-docs-theme');
+        const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body class="docs-body">
+    <nav class="dnav">
+      <div class="dnav-left">
+        {sidebar && (
+          <button class="dnav-menu" aria-label="打开目录" onclick="document.body.classList.toggle('dsidebar-open')">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" /></svg>
+          </button>
+        )}
+        <a class="dnav-brand" href="/rt-docs/">
+          <img src="/favicon.svg" alt="" width="28" height="28" />
+          <b>RT 中文翻译</b>
+        </a>
+        {firstDoc && <a class="dnav-link" href={docsUrl(firstDoc.id)}>教程</a>}
+        {notes && <a class="dnav-link" href={docsUrl(notes.id)}>学习笔记</a>}
+      </div>
+      <div class="dnav-right">
+        <a class="dnav-link" href="/">Ava Li 主页</a>
+        <a class="dnav-link" href="https://github.com/xyLeeww/xyLeeww.github.io" target="_blank" rel="noopener">GitHub ↗</a>
+        <button class="dnav-theme" aria-label="切换深色/浅色模式" title="切换深色/浅色模式" id="theme-toggle">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2V4a8 8 0 1 0 0 16z" /></svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class:list={['dmain', { 'dmain-with-sidebar': sidebar }]}>
+      {sidebar && (
+        <aside class="dsidebar">
+          <nav aria-label="文档目录">
+            {groups.map(({ section, entries }) => {
+              const open = entries.some((e) => e.id === currentId);
+              return (
+                <details class="dsb-cat" open={open}>
+                  <summary class:list={{ active: open }}>{section.title}</summary>
+                  <ul>
+                    {entries.map((e) => (
+                      <li>
+                        <a href={docsUrl(e.id)} class:list={{ active: e.id === currentId }}>{e.data.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              );
+            })}
+          </nav>
+        </aside>
+      )}
+      <main class="dcontent">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="dfooter">
+      <div class="dfooter-links">
+        <div>
+          <h4>资料</h4>
+          <a href="https://raytracing.github.io/" target="_blank" rel="noopener">Ray Tracing in One Weekend ↗</a>
+          <a href="https://github.com/nvpro-samples/vk_raytracing_tutorial_KHR" target="_blank" rel="noopener">NVIDIA vk_raytracing_tutorial_KHR ↗</a>
+        </div>
+        <div>
+          <h4>More</h4>
+          <a href="/">Ava Li 主页</a>
+          <a href="/raytracing/">简洁版外观</a>
+          <a href="https://github.com/xyLeeww/xyLeeww.github.io" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+      <p>Copyright © {new Date().getFullYear()} Ava Li. 译文版权与许可遵循各原文。Built with Astro.</p>
+    </footer>
+
+    <script is:inline>
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('rt-docs-theme', next);
+      });
+      document.querySelectorAll('.dsidebar a').forEach((a) =>
+        a.addEventListener('click', () => document.body.classList.remove('dsidebar-open')));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+import { groupBySection } from '../../data/raytracing';
+
+const groups = groupBySection(await getCollection('raytracing'));
+const first = groups[0]?.entries[0];
+const docsUrl = (id: string) => `/rt-docs/${id}/`;
+const startOf = (key: string) => groups.find((g) => g.section.key === key)?.entries[0];
+
+const features = [
+  {
+    title: '简单易懂的中文翻译',
+    text: '《Ray Tracing in One Weekend》全书翻译,从输出第一张图片开始,一步步写出自己的光线追踪器。',
+    href: startOf('01-rtiow'),
+    icon: 'M4 5h16v2H4zm0 4h10v2H4zm0 4h16v2H4zm0 4h10v2H4z',
+  },
+  {
+    title: '从 BVH 到硬件光追',
+    text: 'BVH 加速结构,以及 NVIDIA Vulkan 光线追踪教程:BLAS/TLAS、光追管线、SBT 和 Ray Query。',
+    href: startOf('03-nvidia-tutorial'),
+    icon: 'M12 2 2 7l10 5 10-5-10-5zm-8 9.5 8 4 8-4V14l-8 4-8-4v-2.5zm0 5 8 4 8-4V19l-8 4-8-4v-2.5z',
+  },
+  {
+    title: '原创学习笔记',
+    text: '三角形相交、SAH、Ray Query 与光追管线对比、示例代码导读,配合两天学习计划阅读。',
+    href: startOf('05-notes'),
+    icon: 'M6 2h9l5 5v15H6zm8 1.5V8h4.5zM8 12h8v2H8zm0 4h8v2H8z',
+  },
+];
+---
+
+<DocsLayout title="光线追踪中文翻译 | RT 中文翻译">
+  <header class="dhero">
+    <h1>光线追踪中文翻译</h1>
+    <p>Ray Tracing in One Weekend · NVIDIA Vulkan Ray Tracing · By Ava Li</p>
+    {first && <a class="dbtn" href={docsUrl(first.id)}>开始阅读</a>}
+  </header>
+
+  <section class="dfeatures">
+    {features.map((f) => (
+      <div class="dfeature">
+        <svg viewBox="0 0 24 24" width="96" height="96" aria-hidden="true"><path fill="currentColor" d={f.icon} /></svg>
+        <h3>{f.href ? <a href={docsUrl(f.href.id)}>{f.title}</a> : f.title}</h3>
+        <p>{f.text}</p>
+      </div>
+    ))}
+  </section>
+</DocsLayout>
