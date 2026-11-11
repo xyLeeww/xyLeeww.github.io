@@ -1,7 +1,7 @@
 ---
 import DocsLayout from '../../layouts/DocsLayout.astro';
 import { getCollection, render } from 'astro:content';
-import { sortEntries, sectionOf } from '../../data/raytracing';
+import { sortEntries, sectionOf, navTitle } from '../../data/raytracing';
 
 export async function getStaticPaths() {
   const entries = sortEntries(await getCollection('raytracing'));
@@ -28,7 +28,7 @@ const docsUrl = (id: string) => `/rt-docs/${id}/`;
         </a>
         {section && <><span class="sep">›</span><span>{section.title}</span></>}
         <span class="sep">›</span>
-        <span class="dcrumb-current">{d.title}</span>
+        <span class="dcrumb-current">{navTitle(entry)}</span>
       </nav>
 
       <h1 class="ddoc-title">{d.title}</h1>
@@ -53,13 +53,13 @@ const docsUrl = (id: string) => `/rt-docs/${id}/`;
         {prev ? (
           <a class="dpager-link" href={docsUrl(prev.id)}>
             <span class="dpager-sub">上一页</span>
-            <span class="dpager-label">« {prev.data.title}</span>
+            <span class="dpager-label">« {navTitle(prev)}</span>
           </a>
         ) : <span />}
         {next ? (
           <a class="dpager-link next" href={docsUrl(next.id)}>
             <span class="dpager-sub">下一页</span>
-            <span class="dpager-label">{next.data.title} »</span>
+            <span class="dpager-label">{navTitle(next)} »</span>
           </a>
         ) : <span />}
       </nav>
