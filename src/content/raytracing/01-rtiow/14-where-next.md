@@ -89,18 +89,18 @@ int main() {
 
 你现在已经拥有一个很酷的光线追踪器了!接下来做什么呢?
 
-### 第 2 本书:[_Ray Tracing: The Next Week_](https://raytracing.github.io/books/RayTracingTheNextWeek.html)
+### 第 2 本书:[_Ray Tracing: The Next Week_](/rt-docs/02-tnw/01-overview/)
 
 本系列的第二本书建立在你在这里开发的光线追踪器之上,其中包括以下新功能:
 
-- 运动模糊(Motion blur)——真实地渲染运动中的物体。
-- [包围体层次结构(Bounding volume hierarchies)](/rt-docs/02-tnw-bvh/01-bvh/)——加快复杂场景的渲染速度。
-- 纹理贴图(Texture maps)——把图像贴到物体上。
-- 柏林噪声(Perlin noise)——一种随机噪声生成器,在许多技术中都非常有用。
-- 四边形(Quadrilaterals)——除了球体之外终于有别的东西可以渲染了!它也是实现圆盘、三角形、圆环或几乎任何其他二维图元的基础。
-- 光源(Lights)——为场景添加光源。
-- 变换(Transforms)——用于放置和旋转物体。
-- 体积渲染(Volumetric rendering)——渲染烟雾、云以及其他气态体积。
+- [运动模糊(Motion blur)](/rt-docs/02-tnw/02-motion-blur/)——真实地渲染运动中的物体。
+- [包围体层次结构(Bounding volume hierarchies)](/rt-docs/02-tnw/03-bvh/)——加快复杂场景的渲染速度。
+- [纹理贴图(Texture maps)](/rt-docs/02-tnw/04-texture-mapping/)——把图像贴到物体上。
+- [柏林噪声(Perlin noise)](/rt-docs/02-tnw/05-perlin-noise/)——一种随机噪声生成器,在许多技术中都非常有用。
+- [四边形(Quadrilaterals)](/rt-docs/02-tnw/06-quadrilaterals/)——除了球体之外终于有别的东西可以渲染了!它也是实现圆盘、三角形、圆环或几乎任何其他二维图元的基础。
+- [光源(Lights)](/rt-docs/02-tnw/07-lights/)——为场景添加光源。
+- [变换(Transforms)](/rt-docs/02-tnw/08-instances/)——用于放置和旋转物体。
+- [体积渲染(Volumetric rendering)](/rt-docs/02-tnw/09-volumes/)——渲染烟雾、云以及其他气态体积。
 
 ### 第 3 本书:[_Ray Tracing: The Rest of Your Life_](https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html)
 

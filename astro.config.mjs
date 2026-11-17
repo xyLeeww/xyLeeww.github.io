@@ -14,6 +14,8 @@ export default defineConfig({
   redirects: {
     '/raytracing': '/rt-docs/',
     '/raytracing/[...slug]': '/rt-docs/[...slug]',
+    // The Next Week section used to contain only the BVH chapter.
+    '/rt-docs/02-tnw-bvh/01-bvh': '/rt-docs/02-tnw/03-bvh/',
   },
   markdown: {
     remarkPlugins: [remarkMath],

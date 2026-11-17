@@ -43,6 +43,27 @@ kind: original
 | attenuation / albedo | 衰减 / 反照率(albedo) |
 | Monte Carlo / importance sampling | 蒙特卡洛 / 重要性采样 |
 
+## 纹理、光源与体积
+
+| English | 中文 |
+|---|---|
+| motion blur / shutter | 运动模糊 / 快门 |
+| texture / texture mapping | 纹理 / 纹理映射 |
+| texture coordinates | 纹理坐标 |
+| solid texture / image texture | 实体纹理(solid texture) / 图像纹理 |
+| checker texture | 棋盘格纹理 |
+| Perlin noise | 柏林噪声(Perlin noise) |
+| trilinear interpolation | 三线性插值 |
+| turbulence | 湍流(turbulence) |
+| quadrilateral (quad) | 四边形(quad) |
+| primitive | 图元 |
+| emissive material / area light | 自发光材质 / 面光源 |
+| Cornell box | 康奈尔盒(Cornell Box) |
+| translation / rotation / transform | 平移 / 旋转 / 变换 |
+| participating media / volume | 参与介质(participating media) / 体积 |
+| constant density medium | 恒定密度介质 |
+| isotropic / phase function | 各向同性(isotropic) / 相函数(phase function) |
+
 ## 加速结构
 
 | English | 中文 |

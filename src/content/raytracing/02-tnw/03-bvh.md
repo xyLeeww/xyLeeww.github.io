@@ -1,6 +1,6 @@
 ---
-title: "包围体层次结构(Bounding Volume Hierarchies)"
-order: 1
+title: "3. 包围体层次结构(Bounding Volume Hierarchies)"
+order: 3
 description: "用轴对齐包围盒和包围体层次结构(BVH)把光线与物体求交从线性搜索加速到亚线性搜索"
 kind: translation
 source: "https://raytracing.github.io/books/RayTracingTheNextWeek.html#boundingvolumehierarchies"
@@ -8,7 +8,7 @@ sourceTitle: "Ray Tracing: The Next Week · Bounding Volume Hierarchies"
 license: "CC0 1.0"
 ---
 
-> **译注**:本页是系列第二本书《Ray Tracing: The Next Week》的第 3 章。它建立在《Ray Tracing in One Weekend》的代码之上(中文译文见[第 1 章](/rt-docs/01-rtiow/01-overview/)),并且用到了本书第 2 章“运动模糊(Motion Blur)”中加入的代码(该章未翻译,见[原文](https://raytracing.github.io/books/RayTracingTheNextWeek.html#motionblur)),因此文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。代码清单中绿色背景、行首带 `+` 的行是新增或修改的代码,红色背景、行首带 `-` 的行是需要删掉的代码。
+> **译注**:本章用到了[第 2 章“运动模糊”](/rt-docs/02-tnw/02-motion-blur/)中加入的代码,文中出现的 `time`、运动中的球体、`ray center` 等内容都来自那一章。
 
 这一部分是到目前为止,我们正在编写的光线追踪器(ray tracer)中最难、最复杂的部分。我之所以把它放在这一章,一是为了让代码运行得更快,二是因为它会对 `hittable` 做一点重构,这样以后我加入矩形和长方体时,就不必再回头重构它们了。
 

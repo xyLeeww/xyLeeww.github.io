@@ -12,7 +12,7 @@ const startOf = (key: string) => groups.find((g) => g.section.key === key)?.entr
 const features = [
   {
     title: '简单易懂的中文翻译',
-    text: '《Ray Tracing in One Weekend》全书翻译,从输出第一张图片开始,一步步写出自己的光线追踪器。',
+    text: '《Ray Tracing in One Weekend》和《The Next Week》全书翻译,从输出第一张图片开始,一步步写出带纹理、光源和体积的光线追踪器。',
     href: startOf('01-rtiow'),
     icon: 'M4 5h16v2H4zm0 4h10v2H4zm0 4h16v2H4zm0 4h10v2H4z',
   },
@@ -34,7 +34,7 @@ const features = [
 <DocsLayout title="光线追踪中文翻译 | RT 中文翻译" space={rtSpace}>
   <header class="dhero">
     <h1>光线追踪中文翻译</h1>
-    <p>Ray Tracing in One Weekend · NVIDIA Vulkan Ray Tracing · By Ava Li</p>
+    <p>Ray Tracing in One Weekend · The Next Week · NVIDIA Vulkan Ray Tracing · By Ava Li</p>
     {first && <a class="dbtn" href={docsUrl(first.id)}>开始阅读</a>}
   </header>
 

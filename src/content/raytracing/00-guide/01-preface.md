@@ -12,7 +12,7 @@ kind: original
 | 资料 | 原作者 | 许可 | 本站形式 |
 |---|---|---|---|
 | [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) | Peter Shirley、Trevor David Black、Steve Hollasch | CC0 1.0 | 全书翻译 |
-| [Ray Tracing: The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html) 第 3 章 BVH | 同上 | CC0 1.0 | 章节翻译 |
+| [Ray Tracing: The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html) | 同上 | CC0 1.0 | 全书翻译 |
 | [NVIDIA Vulkan Ray Tracing Tutorial (v2)](https://github.com/nvpro-samples/vk_raytracing_tutorial_KHR) | NVIDIA | Apache-2.0 | 主教程和三篇专题翻译 |
 | [Sascha Willems Vulkan 示例](https://github.com/SaschaWillems/Vulkan) | Sascha Willems | MIT | 原创导读 |
 | [Scratchapixel](https://www.scratchapixel.com/)、[PBR Book](https://pbr-book.org/)、[Jacco Bikker 的 BVH 系列](https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/)、[Khronos 博客](https://www.khronos.org/blog/ray-tracing-in-vulkan) | 各自作者 | 禁止演绎或保留所有权利 | 原创学习笔记,只附链接 |

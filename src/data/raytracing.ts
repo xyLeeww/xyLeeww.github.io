@@ -16,9 +16,9 @@ export const rtSpace: DocSpace = {
       summary: '全书翻译:从输出一张图片开始,一步步写出支持漫反射、金属、玻璃和景深的光线追踪器。',
     },
     {
-      key: '02-tnw-bvh',
-      title: 'The Next Week:BVH',
-      summary: '《The Next Week》中“包围体层次结构”一章的翻译:AABB、slab 相交和 BVH 构建。',
+      key: '02-tnw',
+      title: 'Ray Tracing: The Next Week',
+      summary: '全书翻译:运动模糊、BVH、纹理、柏林噪声、四边形、光源、实例和体积,最后渲染出康奈尔盒和全书最终场景。',
     },
     {
       key: '03-nvidia-tutorial',

@@ -14,7 +14,7 @@ kind: original
 | 1.5h | 光线、相机、球体相交、法线 | [Ray Tracing in One Weekend](/rt-docs/01-rtiow/01-overview/) 第 1–6 章 |
 | 1.5h | 抗锯齿、漫反射、金属、电介质、相机、景深 | 同书第 7–14 章(以理解为主,可以略读推导) |
 | 1h | 光线与三角形相交(Möller–Trumbore)和 AABB 相交 | [三角形与 AABB 相交](/rt-docs/05-notes/01-ray-triangle-intersection/) |
-| 1h | BVH 的构建与遍历 | [The Next Week:BVH](/rt-docs/02-tnw-bvh/01-bvh/) |
+| 1h | BVH 的构建与遍历 | [The Next Week:包围体层次结构](/rt-docs/02-tnw/03-bvh/) |
 | 1–1.5h | SAH 和更快的 BVH | [BVH 与 SAH](/rt-docs/05-notes/02-bvh-sah/) |
 
 **当天自测:**
