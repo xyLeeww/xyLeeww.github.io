@@ -16,6 +16,16 @@ kind: original
 
 光栅化里“像素中心是否在三角形内”用的是边函数(edge function);下面会看到,光线追踪里用的重心坐标(barycentric coordinates)和边函数本质上是同一组量,只是换了个问法。
 
+### 为什么偏偏是三角形?
+
+《Ray Tracing in One Weekend》里只有球,但真实场景中的人物、车辆、建筑几乎都是**三角形网格**(triangle mesh):把曲面切成成千上万个小三角形拼起来。三角形之所以成为标准图元,有几个原因:
+
+- **三个不共线的点一定在同一个平面上**。四边形的四个顶点可能不共面(“扭曲”的四边形),三角形永远不会。
+- **任何多边形都能拆成三角形**,曲面也能用足够多的小三角形逼近。
+- OBJ、glTF、FBX 等模型格式,以及 GPU 的光栅化和硬件光追,都以三角形为基本单位。Vulkan 的 BLAS 里最常见的几何类型就是 `VK_GEOMETRY_TYPE_TRIANGLES_KHR`。
+
+所以对光线追踪器来说,最核心的问题就是:**这条光线有没有打中某个三角形?打在哪里?** 而 BVH 的作用是尽量少问这个问题(见第 6 节)。
+
 ## 1. 参数化光线
 
 一条光线由起点 $\mathbf{o}$ 和方向 $\mathbf{d}$ 决定,光线上的点写成参数 $t$ 的函数:
@@ -32,20 +42,134 @@ $$
 
 ## 2. 光线与平面
 
-平面可以写成 $\mathbf{n} \cdot \mathbf{p} = c$($\mathbf{n}$ 为法线)。把光线代入:
+### 2.1 平面方程从哪里来
+
+确定一个平面需要两样东西:**法线** $\mathbf{n}$(垂直于平面的方向)和**平面上的一个已知点** $\mathbf{p}_0$。
+
+如果点 $\mathbf{p}$ 也在平面上,那么从 $\mathbf{p}_0$ 指向 $\mathbf{p}$ 的向量 $\mathbf{p} - \mathbf{p}_0$ 躺在平面里,一定和法线垂直,点积为 0:
+
+$$
+\mathbf{n} \cdot (\mathbf{p} - \mathbf{p}_0) = 0
+\quad\Longrightarrow\quad
+\mathbf{n} \cdot \mathbf{p} = \mathbf{n} \cdot \mathbf{p}_0
+$$
+
+右边 $\mathbf{n} \cdot \mathbf{p}_0$ 是一个固定的数,记作 $c$,就得到平面方程
+
+$$
+\mathbf{n} \cdot \mathbf{p} = c
+$$
+
+它的意思是:**平面上所有点和法线做点积,结果都是同一个数 $c$**;不在平面上的点,结果会比 $c$ 大(在法线指向的一侧)或比 $c$ 小(在另一侧)。
+
+```text
+            n
+            ^
+            |      n·p > c   (法线指向的一侧)
+   ---------+-----------  平面:n·p = c
+            p0     n·p < c   (另一侧)
+```
+
+举个例子:平面 $z = -2$ 的法线可以取 $\mathbf{n} = (0, 0, 1)$,平面上一点取 $\mathbf{p}_0 = (0, 0, -2)$,所以 $c = -2$。而 $\mathbf{n} \cdot \mathbf{p} = p_z$,方程 $\mathbf{n} \cdot \mathbf{p} = -2$ 正是 $z = -2$。
+
+$\mathbf{n}$ 不必是单位向量:把 $\mathbf{n}$ 和 $c$ 同时乘以同一个非零数,描述的仍是同一个平面。
+
+### 2.2 把光线代入
+
+交点 $\mathbf{r}(t)$ 既在光线上,也在平面上,所以把 $\mathbf{r}(t) = \mathbf{o} + t\,\mathbf{d}$ 代入平面方程。点积对加法可以展开:
 
 $$
 \mathbf{n} \cdot (\mathbf{o} + t\,\mathbf{d}) = c
 \quad\Longrightarrow\quad
+\mathbf{n} \cdot \mathbf{o} + t\,(\mathbf{n} \cdot \mathbf{d}) = c
+\quad\Longrightarrow\quad
 t = \frac{c - \mathbf{n} \cdot \mathbf{o}}{\mathbf{n} \cdot \mathbf{d}}
 $$
 
-- 分母 $\mathbf{n} \cdot \mathbf{d} = 0$:光线与平面平行,没有交点(或整条光线在平面内,一般也按不相交处理)。
-- 分母的符号告诉我们光线是从平面的哪一侧射来的,这就是“正面 / 背面”判断的来源。
+$\mathbf{n} \cdot \mathbf{o}$ 和 $\mathbf{n} \cdot \mathbf{d}$ 都只是普通的数,所以这其实就是解一个一元一次方程。可以这样理解这个比值:
 
-三角形相交最朴素的做法就是两步:先求与三角形所在平面的交点,再判断交点是否在三角形内。它能工作,但需要先算法线、再做三次叉积判断,运算量偏大。Möller–Trumbore 把两步合成一步。
+- 分子 $c - \mathbf{n} \cdot \mathbf{o}$:起点 $\mathbf{o}$ 沿法线方向**离平面还差多少**;
+- 分母 $\mathbf{n} \cdot \mathbf{d}$:光线每前进一个单位 $t$,沿法线方向**移动多少**;
+- 两者相除,就是“还要走几步才能到达平面”。
+
+求出 $t$ 之后还要检查 $t \in [t_{\min}, t_{\max}]$;例如 $t < 0$ 表示平面在光线起点的**背后**,不能算命中。
+
+**算例。** 光线从原点出发,方向 $\mathbf{d} = (-0.25, -0.25, -1)$,与平面 $z = -2$ 求交:
+
+$$
+\mathbf{n} \cdot \mathbf{o} = 0, \qquad \mathbf{n} \cdot \mathbf{d} = -1, \qquad
+t = \frac{-2 - 0}{-1} = 2, \qquad
+\mathbf{r}(2) = (-0.5,\ -0.5,\ -2)
+$$
+
+后文会一直沿用这条光线和平面 $z = -2$ 上的同一个三角形,方便对照每一步的数字。
+
+### 2.3 分母为 0 与正反面
+
+| $\mathbf{n} \cdot \mathbf{d}$ | 含义 |
+|---|---|
+| $= 0$ | $\mathbf{d}$ 与法线垂直,光线**平行**于平面:要么永远碰不到,要么整条光线都在平面里。后者有无数个交点,一般也按不相交处理。同时公式的分母为 0,也没法直接计算 |
+| $< 0$ | 光线与法线方向相反,从法线指向的那一侧射来,打到**正面** |
+| $> 0$ | 光线与法线方向相同,从平面背后射来,打到**背面** |
+
+这和《Ray Tracing in One Weekend》里用 `dot(r.direction(), outward_normal) < 0` 判断 `front_face` 是同一个道理。上面的算例中 $\mathbf{n} \cdot \mathbf{d} = -1 < 0$,光线打到的是法线 $(0, 0, 1)$ 指向的那一面。
+
+### 2.4 朴素做法:先求平面交点,再判断内外
+
+平面是无限大的,三角形只是平面上的一小块。光线打到平面,不代表打到三角形:
+
+```text
+          C
+         / \
+        / P \        P:在三角形内  -> 命中
+       /     \
+      A-------B
+                  Q  Q:在平面上,但在三角形外 -> 不命中
+```
+
+所以最直接的做法分两步。
+
+**第一步,和三角形所在平面求交。** 用两条边的叉积得到法线,再用顶点 $A$ 得到 $c$:
+
+$$
+\mathbf{N} = (B - A) \times (C - A), \qquad c = \mathbf{N} \cdot A
+$$
+
+然后用 2.2 的公式求出 $t$ 和交点 $P = \mathbf{r}(t)$。
+
+**第二步,判断 $P$ 是否在三条边的同一侧。** 对每条边做一次叉积,看 $P$ 在这条边的左边还是右边:
+
+$$
+\big((B - A) \times (P - A)\big) \cdot \mathbf{N} \ge 0, \quad
+\big((C - B) \times (P - B)\big) \cdot \mathbf{N} \ge 0, \quad
+\big((A - C) \times (P - C)\big) \cdot \mathbf{N} \ge 0
+$$
+
+$A \to B \to C$ 绕一圈时,如果三个值都不小于 0,说明 $P$ 一直在每条边的同一侧(内侧),也就在三角形内部或边上。只要有一个为负,$P$ 就跑到了某条边的外侧。
+
+**算例。** 取三角形
+
+$$
+A = (-1, -1, -2), \quad B = (1, -1, -2), \quad C = (-1, 1, -2)
+$$
+
+它在平面 $z = -2$ 上。为了方便手算,这里用单位法线 $\hat{\mathbf{n}} = (0, 0, 1)$ 代替 $\mathbf{N}$(方向相同,符号判断不变)。三个叉积都只有 $z$ 分量,点积就是这个 $z$ 分量:
+
+| 边 | 边向量 | 到点的向量 | $P = (-0.5, -0.5, -2)$ | $Q = (1, 1, -2)$ |
+|---|---|---|---|---|
+| $AB$ | $(2, 0, 0)$ | $P - A = (0.5, 0.5, 0)$ | $1$ | $4$ |
+| $BC$ | $(-2, 2, 0)$ | $P - B = (-1.5, 0.5, 0)$ | $2$ | $-4$ |
+| $CA$ | $(0, -2, 0)$ | $P - C = (0.5, -1.5, 0)$ | $1$ | $4$ |
+
+$P$ 的三个值都为正,在三角形内;$Q$ 在边 $BC$ 上得到负数,在三角形外。
+
+这个方法能用,但要先算法线和平面方程,再做三次叉积和三次点积。Möller–Trumbore 把“求交点”和“判断内外”合成一步,运算更少,也不需要存储平面方程。
+
+顺便留意上表里 $P$ 的三个值 $1, 2, 1$:下一节会看到,它们恰好对应 $P$ 的三个重心坐标。
 
 ## 3. 重心坐标
+
+### 3.1 用两条边当坐标轴
 
 设三角形顶点为 $A, B, C$,记两条边 $\mathbf{e}_1 = B - A$,$\mathbf{e}_2 = C - A$。三角形所在平面上的任意点都可以写成
 
@@ -53,7 +177,53 @@ $$
 P(u, v) = (1 - u - v)\,A + u\,B + v\,C = A + u\,\mathbf{e}_1 + v\,\mathbf{e}_2
 $$
 
-$(1-u-v,\ u,\ v)$ 就是 $P$ 的重心坐标。它们有一个直观的几何意义:$u$ 等于三角形 $PCA$ 的面积除以 $ABC$ 的面积,$v$ 等于 $PAB$ 的面积除以 $ABC$ 的面积,即“对面那个小三角形占了多大比例”。
+**两种写法为什么相等?** 把左边展开、重新分组即可:
+
+$$
+(1 - u - v)A + uB + vC = A + u(B - A) + v(C - A) = A + u\,\mathbf{e}_1 + v\,\mathbf{e}_2
+$$
+
+**为什么平面上的任意点都能这样写?** 可以把右边的写法看成在三角形所在平面上建了一个**斜坐标系**:以 $A$ 为原点,以 $\mathbf{e}_1$、$\mathbf{e}_2$ 为两根坐标轴。从 $A$ 出发,沿 $\mathbf{e}_1$ 走 $u$ 倍,再沿 $\mathbf{e}_2$ 走 $v$ 倍,就到了 $P$:
+
+```text
+          C
+          ^
+          |
+       e2 |    P = A + u·e1 + v·e2
+          |   /
+          |  /  v·e2
+          | /
+          A ---------> B
+            u·e1    e1
+```
+
+这和普通的平面直角坐标 $P = O + x\,(1, 0) + y\,(0, 1)$ 是一回事,只是两根轴换成了三角形的两条边,不再互相垂直、长度也不一定是 1。只要 $\mathbf{e}_1$ 和 $\mathbf{e}_2$ **不平行**,它们就能组合出这个平面上的任意方向,所以每个点都对应**唯一**的一组 $(u, v)$。如果两条边平行,说明 $A, B, C$ 共线,三角形退化成一条线段,这种三角形在相交测试中会被排除(见 4.3)。
+
+**算例。** 沿用第 2 节的三角形,$\mathbf{e}_1 = (2, 0, 0)$,$\mathbf{e}_2 = (0, 2, 0)$,于是
+
+$$
+P(u, v) = (-1 + 2u,\ -1 + 2v,\ -2)
+$$
+
+| $(u, v)$ | $P$ | 位置 |
+|---|---|---|
+| $(0, 0)$ | $(-1, -1, -2)$ | 顶点 $A$ |
+| $(1, 0)$ | $(1, -1, -2)$ | 顶点 $B$ |
+| $(0, 1)$ | $(-1, 1, -2)$ | 顶点 $C$ |
+| $(0.25, 0.25)$ | $(-0.5, -0.5, -2)$ | 内部,第 2 节光线的交点 |
+| $(1/3, 1/3)$ | $(-1/3, -1/3, -2)$ | 内部,三角形的重心 |
+| $(1, 1)$ | $(1, 1, -2)$ | 平面上,但在三角形外(第 2 节的 $Q$) |
+| $(-0.5, 0.5)$ | $(-2, 0, -2)$ | 平面上,但在三角形外 |
+
+### 3.2 重心坐标是三个顶点的权重
+
+令 $w = 1 - u - v$,左边的写法就是 $P = wA + uB + vC$,并且 $w + u + v = 1$。$(w, u, v)$ 就是 $P$ 的重心坐标,可以理解为三个顶点各自对 $P$ 的“拉力”或权重:
+
+- 在 $A$ 处,$(w, u, v) = (1, 0, 0)$,完全由 $A$ 决定;$B$、$C$ 同理;
+- 在三角形的重心,三个权重都是 $1/3$;
+- 越靠近某个顶点,这个顶点的权重就越大。
+
+它们还有一个直观的几何意义:$u$ 等于三角形 $PCA$ 的面积除以 $ABC$ 的面积,$v$ 等于 $PAB$ 的面积除以 $ABC$ 的面积,即“对面那个小三角形占了多大比例”。
 
 ```text
               C
@@ -64,25 +234,49 @@ $(1-u-v,\ u,\ v)$ 就是 $P$ 的重心坐标。它们有一个直观的几何意
          A---------B    w = 1-u-v                      -> A 的权重
 ```
 
+为什么是“对面”的三角形?以 $u$ 为例:三角形 $PCA$ 以边 $CA$ 为底,底不变,面积就只取决于 $P$ 到直线 $CA$ 的距离。$P$ 落在边 $CA$ 上时这个面积为 0,$B$ 的权重 $u = 0$;$P$ 移到 $B$ 时面积最大,等于整个三角形,$u = 1$。也就是说,$P$ 离边 $CA$ 越远,离 $B$ 越近,$u$ 越大。
+
+**和边函数的关系。** 第 2.4 节里每条边的叉积 $(B - A) \times (P - A)$,长度正好是小三角形面积的两倍。在那个算例中,$|\mathbf{e}_1 \times \mathbf{e}_2| = 4$ 是整个三角形面积的两倍,于是
+
+$$
+v = \frac{1}{4} = 0.25 \;(\text{边 } AB), \qquad
+w = \frac{2}{4} = 0.5 \;(\text{边 } BC), \qquad
+u = \frac{1}{4} = 0.25 \;(\text{边 } CA)
+$$
+
+和 3.1 表里交点的 $(u, v) = (0.25, 0.25)$ 完全一致。这就是开头说的:**边函数和重心坐标是同一组量**,前者是没除以总面积的版本。
+
+### 3.3 内外判断
+
 $P$ 在三角形内部(含边界)当且仅当
 
 $$
 u \ge 0,\quad v \ge 0,\quad u + v \le 1
 $$
 
-重心坐标不只用来判断内外,命中之后还要用它来插值法线、UV、顶点颜色。在 Vulkan 里,三角形命中时 `hitAttributeEXT vec2` 拿到的正是这里的 $(u, v)$:第二个顶点的权重是 `attribs.x`,第三个顶点的权重是 `attribs.y`,第一个顶点的权重是 `1 - attribs.x - attribs.y`。
+最后一个条件就是 $w = 1 - u - v \ge 0$。三个条件各对应一条边:
+
+| 条件不满足 | $P$ 跑到了哪里 |
+|---|---|
+| $u < 0$ | 边 $CA$ 的外侧(远离 $B$ 的一侧) |
+| $v < 0$ | 边 $AB$ 的外侧(远离 $C$ 的一侧) |
+| $u + v > 1$ | 边 $BC$ 的外侧(远离 $A$ 的一侧) |
+
+例如 3.1 表中的 $(1, 1)$ 满足 $u, v \ge 0$,但 $u + v = 2 > 1$,所以在边 $BC$ 外侧,和 2.4 节 $Q$ 的边 $BC$ 测试结果为负一致。
+
+重心坐标不只用来判断内外,命中之后还要用它来插值法线、UV、顶点颜色。在 Vulkan 里,三角形命中时 `hitAttributeEXT vec2` 拿到的正是这里的 $(u, v)$:第二个顶点的权重是 `attribs.x`,第三个顶点的权重是 `attribs.y`,第一个顶点的权重是 `1 - attribs.x - attribs.y`。例如三个顶点的法线分别为 $\mathbf{n}_A, \mathbf{n}_B, \mathbf{n}_C$,命中点的平滑法线就是 $\text{normalize}(w\,\mathbf{n}_A + u\,\mathbf{n}_B + v\,\mathbf{n}_C)$。
 
 ## 4. Möller–Trumbore:用克莱姆法则一步求出 t、u、v
 
 ### 4.1 写成线性方程组
 
-交点既在光线上,又在三角形平面上:
+Möller–Trumbore 的出发点很简单:交点既在光线上,又在三角形平面上,那就让两种写法相等:
 
 $$
 \mathbf{o} + t\,\mathbf{d} = A + u\,\mathbf{e}_1 + v\,\mathbf{e}_2
 $$
 
-把未知数移到左边,令 $\mathbf{s} = \mathbf{o} - A$:
+这里 $\mathbf{o}, \mathbf{d}, A, \mathbf{e}_1, \mathbf{e}_2$ 都是已知的,未知数只有三个数:$t$(交点在光线上的位置)和 $u, v$(交点在三角形上的位置)。把未知数移到左边,令 $\mathbf{s} = \mathbf{o} - A$(从顶点 $A$ 指向光线起点):
 
 $$
 -t\,\mathbf{d} + u\,\mathbf{e}_1 + v\,\mathbf{e}_2 = \mathbf{s}
@@ -91,41 +285,96 @@ $$
 \begin{bmatrix} t \\ u \\ v \end{bmatrix} = \mathbf{s}
 $$
 
-这是一个 3×3 线性方程组,三列分别是 $-\mathbf{d}$、$\mathbf{e}_1$、$\mathbf{e}_2$。
+这是一个 3×3 线性方程组,三列分别是 $-\mathbf{d}$、$\mathbf{e}_1$、$\mathbf{e}_2$。每个向量有 $x, y, z$ 三个分量,所以一条向量等式就是三条普通方程,三个方程正好解三个未知数。
+
+**算例。** 用第 2、3 节的数据:$\mathbf{d} = (-0.25, -0.25, -1)$,$\mathbf{e}_1 = (2, 0, 0)$,$\mathbf{e}_2 = (0, 2, 0)$,$\mathbf{s} = \mathbf{o} - A = (1, 1, 2)$。按分量写出来:
+
+$$
+\begin{cases}
+0.25\,t + 2u = 1 & (x) \\
+0.25\,t + 2v = 1 & (y) \\
+t = 2 & (z)
+\end{cases}
+\quad\Longrightarrow\quad
+t = 2,\quad u = 0.25,\quad v = 0.25
+$$
+
+一次就同时得到了交点距离 $t$ 和重心坐标 $(u, v)$;再检查 $u, v \ge 0$、$u + v \le 1$,就完成了第 2.4 节那两步的全部工作。这个例子特意选得很简单,一般的三角形三条方程都会同时包含 $t, u, v$,需要一个通用的解法,这就是克莱姆法则。
 
 ### 4.2 克莱姆法则 + 三重积
 
-克莱姆法则:第 $i$ 个未知数等于“把第 $i$ 列替换成右端向量后的行列式”除以系数矩阵的行列式。而三个列向量组成的 3×3 行列式就是标量三重积:
+**克莱姆法则**:第 $i$ 个未知数等于“把系数矩阵的第 $i$ 列替换成右端向量后的行列式”除以系数矩阵的行列式。先看一个 2×2 的例子:
+
+$$
+\begin{cases} 2x + y = 5 \\ x + 3y = 10 \end{cases}
+\qquad
+D = \begin{vmatrix} 2 & 1 \\ 1 & 3 \end{vmatrix} = 5, \quad
+x = \frac{\begin{vmatrix} 5 & 1 \\ 10 & 3 \end{vmatrix}}{D} = \frac{5}{5} = 1, \quad
+y = \frac{\begin{vmatrix} 2 & 5 \\ 1 & 10 \end{vmatrix}}{D} = \frac{15}{5} = 3
+$$
+
+求 $x$ 时把第 1 列换成右端 $(5, 10)$,求 $y$ 时把第 2 列换掉。3×3 的情况完全一样,只是行列式变成三阶。
+
+**三重积。** 三个列向量组成的 3×3 行列式就是标量三重积:
 
 $$
 \det(\mathbf{a}, \mathbf{b}, \mathbf{c}) = \mathbf{a} \cdot (\mathbf{b} \times \mathbf{c}) = (\mathbf{a} \times \mathbf{b}) \cdot \mathbf{c}
 $$
 
-并且三重积在轮换下不变、交换两项变号。利用这些性质,引入两个辅助向量
+几何上,它是以 $\mathbf{a}, \mathbf{b}, \mathbf{c}$ 为棱的平行六面体的**有向体积**。由此可以直接看出两条性质:
+
+- **轮换不变**:$\det(\mathbf{a}, \mathbf{b}, \mathbf{c}) = \det(\mathbf{b}, \mathbf{c}, \mathbf{a}) = \det(\mathbf{c}, \mathbf{a}, \mathbf{b})$,同一个六面体,体积不变;
+- **交换两项变号**:例如 $\det(\mathbf{a}, \mathbf{b}, \mathbf{c}) = -\det(\mathbf{b}, \mathbf{a}, \mathbf{c})$,相当于翻转了“左右手”。
+
+此外,某一项前面的负号可以提到外面:$\det(-\mathbf{a}, \mathbf{b}, \mathbf{c}) = -\det(\mathbf{a}, \mathbf{b}, \mathbf{c})$。
+
+利用这些性质,引入两个辅助向量
 
 $$
 \mathbf{p} = \mathbf{d} \times \mathbf{e}_2, \qquad \mathbf{q} = \mathbf{s} \times \mathbf{e}_1
 $$
 
-逐个化简:
+逐个化简(每一行最后都写成 $\mathbf{p}$ 或 $\mathbf{q}$ 与某个向量的点积):
+
+**系数行列式 $D$**:
 
 $$
-D = \det(-\mathbf{d}, \mathbf{e}_1, \mathbf{e}_2) = -\mathbf{d} \cdot (\mathbf{e}_1 \times \mathbf{e}_2) = \mathbf{e}_1 \cdot (\mathbf{d} \times \mathbf{e}_2) = \mathbf{p} \cdot \mathbf{e}_1
+D = \det(-\mathbf{d}, \mathbf{e}_1, \mathbf{e}_2)
+= -\det(\mathbf{d}, \mathbf{e}_1, \mathbf{e}_2)
+\overset{\text{交换 } \mathbf{d}, \mathbf{e}_1}{=} \det(\mathbf{e}_1, \mathbf{d}, \mathbf{e}_2)
+= \mathbf{e}_1 \cdot (\mathbf{d} \times \mathbf{e}_2) = \mathbf{p} \cdot \mathbf{e}_1
 $$
 
-$$
-u = \frac{\det(-\mathbf{d}, \mathbf{s}, \mathbf{e}_2)}{D} = \frac{\mathbf{s} \cdot (\mathbf{d} \times \mathbf{e}_2)}{D} = \frac{\mathbf{p} \cdot \mathbf{s}}{D}
-$$
+**$u$**:把第 2 列换成 $\mathbf{s}$:
 
 $$
-v = \frac{\det(-\mathbf{d}, \mathbf{e}_1, \mathbf{s})}{D} = \frac{\mathbf{d} \cdot (\mathbf{s} \times \mathbf{e}_1)}{D} = \frac{\mathbf{q} \cdot \mathbf{d}}{D}
+u = \frac{\det(-\mathbf{d}, \mathbf{s}, \mathbf{e}_2)}{D}
+= \frac{-\det(\mathbf{d}, \mathbf{s}, \mathbf{e}_2)}{D}
+\overset{\text{交换 } \mathbf{d}, \mathbf{s}}{=} \frac{\det(\mathbf{s}, \mathbf{d}, \mathbf{e}_2)}{D}
+= \frac{\mathbf{s} \cdot (\mathbf{d} \times \mathbf{e}_2)}{D} = \frac{\mathbf{p} \cdot \mathbf{s}}{D}
 $$
 
+**$v$**:把第 3 列换成 $\mathbf{s}$:
+
 $$
-t = \frac{\det(\mathbf{s}, \mathbf{e}_1, \mathbf{e}_2)}{D} = \frac{\mathbf{e}_2 \cdot (\mathbf{s} \times \mathbf{e}_1)}{D} = \frac{\mathbf{q} \cdot \mathbf{e}_2}{D}
+v = \frac{\det(-\mathbf{d}, \mathbf{e}_1, \mathbf{s})}{D}
+= \frac{-\,\mathbf{d} \cdot (\mathbf{e}_1 \times \mathbf{s})}{D}
+= \frac{\mathbf{d} \cdot (\mathbf{s} \times \mathbf{e}_1)}{D} = \frac{\mathbf{q} \cdot \mathbf{d}}{D}
 $$
 
-(每一步都只用了“轮换不变、交换变号”,建议自己在纸上验一遍。)
+(这里用的是叉积反交换:$\mathbf{e}_1 \times \mathbf{s} = -\,\mathbf{s} \times \mathbf{e}_1$。)
+
+**$t$**:把第 1 列换成 $\mathbf{s}$:
+
+$$
+t = \frac{\det(\mathbf{s}, \mathbf{e}_1, \mathbf{e}_2)}{D}
+\overset{\text{轮换}}{=} \frac{\det(\mathbf{e}_2, \mathbf{s}, \mathbf{e}_1)}{D}
+= \frac{\mathbf{e}_2 \cdot (\mathbf{s} \times \mathbf{e}_1)}{D} = \frac{\mathbf{q} \cdot \mathbf{e}_2}{D}
+$$
+
+(建议自己在纸上验一遍。)
+
+为什么要专门凑出 $\mathbf{p}$ 和 $\mathbf{q}$?因为它们能被**重复使用**:$\mathbf{p}$ 同时用于 $D$ 和 $u$,$\mathbf{q}$ 同时用于 $v$ 和 $t$。四个三阶行列式本来要算四次叉积,现在只要两次。
 
 结果非常紧凑:**两次叉积($\mathbf{p}$、$\mathbf{q}$)、四次点积、一次倒数**,不需要预先算三角形法线,也不需要存平面方程。更妙的是可以“边算边退出”:先算出 $u$,如果 $u$ 已经越界,就不必再算 $\mathbf{q}$ 了。
 
@@ -140,6 +389,10 @@ $$
 - $D \approx 0$:光线与三角形平面平行(或三角形退化成线段 / 点),判为不相交。
 - $D > 0$:光线迎着 $\mathbf{N}$ 射来,看到的是 $\mathbf{N}$ 指向的那一面。
 - $D < 0$:光线从 $\mathbf{N}$ 的背后射来。
+
+在前面的算例中,$\mathbf{N} = \mathbf{e}_1 \times \mathbf{e}_2 = (2, 0, 0) \times (0, 2, 0) = (0, 0, 4)$,指向 $+z$,也就是朝着原点处的相机;光线沿 $-z$ 方向射去,$D = -\mathbf{d} \cdot \mathbf{N} = -(-1 \times 4) = 4 > 0$,看到的是正面。如果把顶点顺序改成 $A, C, B$,$\mathbf{N}$ 会反向,$D$ 变成 $-4$,同一条光线就打到了背面。
+
+$D = 0$ 也可以从三重积的角度理解:$D$ 是以 $-\mathbf{d}, \mathbf{e}_1, \mathbf{e}_2$ 为棱的六面体体积。光线方向平行于三角形平面时,三个向量共面,六面体被压扁,体积为 0,方程组没有唯一解;三角形退化($\mathbf{e}_1 \parallel \mathbf{e}_2$)时同理。
 
 所以背面剔除只需要看 $D$ 的符号,几乎不花额外开销。至于“哪一面算正面”,这只是约定:Vulkan 规范规定在默认情况下,从光线的视角看顶点按索引顺序呈**顺时针**时为正面(规范用左手坐标系描述),实例上可以用 `VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR` 翻转;它与光栅化管线里 `VkPipelineRasterizationStateCreateInfo::frontFace` 的设置无关。
 
@@ -190,6 +443,74 @@ bool intersectTriangle(Vec3 o, Vec3 d, Vec3 A, Vec3 B, Vec3 C,
 
 找最近交点时,调用方在每次命中后把 `tMax` 更新为 `hit.t`,后面的三角形自然只会接受更近的交点。
 
+**代码与公式的对应关系:**
+
+| 代码 | 公式 | 作用 |
+|---|---|---|
+| `e1`, `e2` | $\mathbf{e}_1 = B - A$, $\mathbf{e}_2 = C - A$ | 建立 3.1 节的斜坐标系 |
+| `p`, `D` | $\mathbf{p} = \mathbf{d} \times \mathbf{e}_2$, $D = \mathbf{p} \cdot \mathbf{e}_1$ | 系数行列式;为 0 表示平行或退化 |
+| `invD` | $1 / D$ | 只做一次除法,后面三个未知数都乘它 |
+| `s`, `u` | $\mathbf{s} = \mathbf{o} - A$, $u = \mathbf{p} \cdot \mathbf{s} / D$ | 先求 $u$,越界就提前退出 |
+| `q`, `v` | $\mathbf{q} = \mathbf{s} \times \mathbf{e}_1$, $v = \mathbf{q} \cdot \mathbf{d} / D$ | 检查 $v \ge 0$ 和 $u + v \le 1$ |
+| `t` | $t = \mathbf{q} \cdot \mathbf{e}_2 / D$ | 最后检查是否在 $(t_{\min}, t_{\max})$ 内 |
+
+几处细节:
+
+- **为什么检查 `u > 1`?** 最终要求 $v \ge 0$ 且 $u + v \le 1$,这意味着 $u \le 1$。所以只要 $u > 1$,无论 $v$ 是多少都不可能在三角形内,可以在算 $\mathbf{q}$ 之前就返回。
+- **为什么最后才算 `t`?** 光线和三角形所在平面的交点大多数落在三角形外面,先用 $u$、$v$ 筛掉它们,可以省掉很多次计算。
+- **为什么返回 `frontFace`?** 材质需要知道光线从哪一侧进入,例如玻璃要区分“从空气进入玻璃”和“从玻璃射出到空气”。
+
+调用方遍历多个三角形、保留最近交点的写法:
+
+```cpp
+struct Triangle { Vec3 A, B, C; };
+
+// 返回最近命中的三角形下标,没有命中时返回 -1
+int closestHit(Vec3 o, Vec3 d, const Triangle* tris, int count,
+               float tMin, float tMax, TriHit& best)
+{
+    int hitIndex = -1;
+    float closest = tMax;
+    for (int i = 0; i < count; ++i) {
+        TriHit h;
+        // 传入 closest 作为上限:比当前最近交点更远的命中会被直接拒绝
+        if (intersectTriangle(o, d, tris[i].A, tris[i].B, tris[i].C,
+                              tMin, closest, false, h)) {
+            closest = h.t;
+            best = h;
+            hitIndex = i;
+        }
+    }
+    return hitIndex;
+}
+```
+
+这和《Ray Tracing in One Weekend》里 `hittable_list::hit` 用 `closest_so_far` 缩小区间是同一个思路;BVH 遍历也是这样不断缩小 $t_{\max}$ 的。
+
+### 4.5 完整算例
+
+把 4.1 节的数据代入代码,逐行计算:
+
+$$
+A = (-1, -1, -2), \quad B = (1, -1, -2), \quad C = (-1, 1, -2), \quad
+\mathbf{o} = (0, 0, 0), \quad \mathbf{d} = (-0.25, -0.25, -1)
+$$
+
+| 步骤 | 计算 | 结果 |
+|---|---|---|
+| 边 | $\mathbf{e}_1 = B - A$, $\mathbf{e}_2 = C - A$ | $(2, 0, 0)$, $(0, 2, 0)$ |
+| $\mathbf{p}$ | $\mathbf{d} \times \mathbf{e}_2 = (d_y e_{2z} - d_z e_{2y},\ d_z e_{2x} - d_x e_{2z},\ d_x e_{2y} - d_y e_{2x})$ | $(2, 0, -0.5)$ |
+| $D$ | $\mathbf{p} \cdot \mathbf{e}_1 = 2 \times 2$ | $4$,不为 0,且为正面 |
+| $\mathbf{s}$ | $\mathbf{o} - A$ | $(1, 1, 2)$ |
+| $u$ | $\mathbf{p} \cdot \mathbf{s} / D = (2 + 0 - 1) / 4$ | $0.25$,在 $[0, 1]$ 内 |
+| $\mathbf{q}$ | $\mathbf{s} \times \mathbf{e}_1 = (s_y e_{1z} - s_z e_{1y},\ s_z e_{1x} - s_x e_{1z},\ s_x e_{1y} - s_y e_{1x})$ | $(0, 4, -2)$ |
+| $v$ | $\mathbf{q} \cdot \mathbf{d} / D = (0 - 1 + 2) / 4$ | $0.25$,且 $u + v = 0.5 \le 1$ |
+| $t$ | $\mathbf{q} \cdot \mathbf{e}_2 / D = 8 / 4$ | $2$ |
+
+验证:$\mathbf{r}(2) = (-0.5, -0.5, -2)$,而 $A + 0.25\,\mathbf{e}_1 + 0.25\,\mathbf{e}_2 = (-0.5, -0.5, -2)$,两边相同。这个结果也和第 2 节(平面公式)、第 3 节(面积比)、4.1 节(手解方程组)得到的数字一致。
+
+可以试着把 $\mathbf{d}$ 改成 $(0.25, 0.25, -1)$,交点会变成 $(0.5, 0.5, -2)$,对应 $u = v = 0.75$、$u + v = 1.5 > 1$,在 `v` 那一步被拒绝。
+
 ## 5. 数值问题:epsilon、平行和“漏光”
 
 浮点数会让上面这套干净的推导出现几类典型问题。
@@ -237,6 +558,18 @@ t_{\text{exit}} = \min(t_{\max},\ t_{x,\text{far}},\ t_{y,\text{far}},\ t_{z,\te
 $$
 
 相交条件是 $t_{\text{enter}} \le t_{\text{exit}}$。
+
+直观理解:光线必须**先进入所有平板,才算进入盒子**,所以进入时间取各轴进入时间的最大值;只要**离开任意一组平板,就离开了盒子**,所以离开时间取各轴离开时间的最小值。
+
+**算例(2D,省略 $z$ 轴)。** 盒子为 $x \in [1, 3]$、$y \in [1, 2]$,光线从原点出发,取 $t_{\min} = 0$、$t_{\max} = \infty$:
+
+| 方向 $\mathbf{d}$ | $x$ 区间 | $y$ 区间 | $t_{\text{enter}}$ | $t_{\text{exit}}$ | 结果 |
+|---|---|---|---|---|---|
+| $(1, 1)$ | $[1/1,\ 3/1] = [1, 3]$ | $[1/1,\ 2/1] = [1, 2]$ | $1$ | $2$ | 命中,从 $(1, 1)$ 进入,从 $(2, 2)$ 离开 |
+| $(1, 0.2)$ | $[1, 3]$ | $[1/0.2,\ 2/0.2] = [5, 10]$ | $5$ | $3$ | 未命中:在 $y$ 方向进入之前,已经从 $x$ 方向离开 |
+| $(-1, 1)$ | 两个值为 $-1, -3$,取 $[-3, -1]$ | $[1, 2]$ | $1$ | $-1$ | 未命中:盒子在光线 $x$ 方向的背后 |
+
+第三行说明了为什么要取 $\min$/$\max$:$d_x < 0$ 时,$x_{\max}$ 对应的 $t$ 反而更小。
 
 ```text
  y                                 t 轴上的三个区间:
